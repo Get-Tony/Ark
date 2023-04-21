@@ -34,7 +34,8 @@ class ARKSettings(BaseSettings):  # pylint: disable=too-few-public-methods
 
     PROJECTS_DIR: str = get_projects_dir()
     DB_URL: str = f"sqlite:///{Path(PROJECTS_DIR) / 'ark.db'}"
-    LOG_LEVEL: str = "WARNING"
+    CONSOLE_LOG_LEVEL: str = "WARNING"
+    FILE_LOG_LEVEL: str = "INFO"
     ENCODING: str = "utf-8"
     CRONJOB_TAG: str = "#Ark-"
     RUN_SCRIPT: str = str(Path(PROJECTS_DIR) / "ark_run_script.sh")

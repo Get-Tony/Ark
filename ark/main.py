@@ -24,12 +24,16 @@ def ark_cli() -> None:
 def main() -> None:
     """Ark main entry point."""
     init_logging(
+        console_log_level=config.CONSOLE_LOG_LEVEL,
+        file_log_level=config.FILE_LOG_LEVEL,
         log_dir=str(Path(config.PROJECTS_DIR) / "logs"),
-        log_level=config.LOG_LEVEL,
     )
     init_db()
     logger.info("Ark loaded.")
-    if config.LOG_LEVEL.strip().upper() == "DEBUG":
+    if (
+        config.CONSOLE_LOG_LEVEL.strip().upper() == "DEBUG"
+        or config.FILE_LOG_LEVEL.strip().upper() == "DEBUG"
+    ):
         logger.debug("Debug mode enabled.")
         logger.debug("Ark settings: %s", config.json(indent=2))
     ark_cli()
