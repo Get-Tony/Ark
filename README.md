@@ -27,9 +27,9 @@ Ark is an intuitive command-line tool designed to simplify the management of mul
 
 ## Requirements
 
-- Python 3.9.2 or higher
-
 See the [pyproject.toml](./pyproject.toml) file for the full list of requirements.
+
+- Python 3.9.2 or higher
 
 ## Build and Installation
 
@@ -210,13 +210,13 @@ ARK_CONSOLE_LOG_LEVEL=INFO
 ARK_FILE_LOG_LEVEL=DEBUG
 ```
 
-With these settings, Ark will output "INFO" level logs to the console and "DEBUG" level logs to the log file. If you want to disable file logging, simply don't set a `log_dir` value when calling the init_logging function or remove the `ARK_FILE_LOG_LEVEL` variable from your environment.
+With these settings, Ark will output "INFO" level logs to the console and "DEBUG" level logs to the log file. If you want to disable file logging, simply don't set a `log_dir` value when calling the `init_logging` function or remove the `ARK_FILE_LOG_LEVEL` variable from your environment.
 
 ## Disclaimer
 
 - **Use at your own risk!** I am not responsible for any data loss or other issues that may occur.
 - Ark is still in **Alpha** and will likely have bugs and other issues. Please [report](#issues) any issues you encounter.
-- Ark is **Not Supported by or Affiliated** with [Ansible](https://github.com/ansible/ansible) or [Ansible Runner](https://github.com/ansible/ansible-runner)
+- Ark is **Not Supported by or Affiliated** with [Ansible](https://github.com/ansible/ansible) or [Ansible Runner](https://github.com/ansible/ansible-runner).
 
 ## Issues
 
