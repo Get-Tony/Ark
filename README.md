@@ -19,6 +19,7 @@ Ark is an intuitive command-line tool designed to simplify the management of mul
   - [Database](#database)
   - [Logging](#logging)
   - [Disclaimer](#disclaimer)
+  - [Issues](#issues)
   - [License](#license)
   - [Code of Conduct](#code-of-conduct)
   - [Contributing](#contributing)
@@ -167,24 +168,24 @@ Here are the environment variables you can set to configure Ark:
 - `ARK_CONSOLE_LOG_LEVEL`: Set the console log level (default: "WARNING").
 - `ARK_FILE_LOG_LEVEL`: Set the file log level (default: "INFO").
 - `ARK_ENCODING`: Configure the encoding used by Ark (default: "utf-8").
-- `ARK_CRONJOB_TAG`: Set the cron job tag (default: "#Ark-").
 - `ARK_DNS_SERVERS`: Configure the DNS servers used in the `check-dns` command (default: "1.1.1.1,8.8.8.8").
 - `ARK_TABLE_FORMAT`: Set the table format for displaying output (default: "psql").
 
 To create a `.env` file in the project's directory, you can use a text editor and add the environment variables like this:
 
-        ```ini
-        ARK_PROJECTS_DIR=/path/to/projects
-        ARK_DB_URL=sqlite:///path/to/database.db
-        ARK_CONSOLE_LOG_LEVEL=WARNING
-        ARK_FILE_LOG_LEVEL=INFO
-        ARK_ENCODING=utf-8
-        ARK_CRONJOB_TAG=#Ark-
-        ARK_DNS_SERVERS=1.1.1.1,8.8.8.8
-        ARK_TABLE_FORMAT=psql
-        ```
+```ini
+ARK_PROJECTS_DIR=/path/to/projects
+ARK_DB_URL=sqlite:///path/to/database.db
+ARK_CONSOLE_LOG_LEVEL=WARNING
+ARK_FILE_LOG_LEVEL=INFO
+ARK_ENCODING=utf-8
+ARK_DNS_SERVERS=1.1.1.1,8.8.8.8
+ARK_TABLE_FORMAT=psql
+```
 
 Save the file as .env in the project's directory. The environment variables will be automatically loaded when running Ark. To override any of these settings, simply set an environment variable with the same name outside of the dotenv file.
+
+More table formats can be found in the [tabulate](https://pypi.org/project/tabulate/) documentation.
 
 ## Database
 
@@ -204,17 +205,22 @@ To customize the logging behavior, you can modify the following environment vari
 
 Example of a `.env` file with custom logging settings:
 
-        ```ini
-        ARK_CONSOLE_LOG_LEVEL=INFO
-        ARK_FILE_LOG_LEVEL=DEBUG
-        ```
+```ini
+ARK_CONSOLE_LOG_LEVEL=INFO
+ARK_FILE_LOG_LEVEL=DEBUG
+```
 
 With these settings, Ark will output "INFO" level logs to the console and "DEBUG" level logs to the log file. If you want to disable file logging, simply don't set a `log_dir` value when calling the init_logging function or remove the `ARK_FILE_LOG_LEVEL` variable from your environment.
 
 ## Disclaimer
 
-- Use at your own risk! I am not responsible for any data loss or other issues that may occur.
+- **Use at your own risk!** I am not responsible for any data loss or other issues that may occur.
+- Ark is still in **Alpha** and will likely have bugs and other issues. Please [report](#issues) any issues you encounter.
 - Ark is **Not Supported by or Affiliated** with [Ansible](https://github.com/ansible/ansible) or [Ansible Runner](https://github.com/ansible/ansible-runner)
+
+## Issues
+
+If you encounter any issues, please [Report Issues](https://gitgub.com/Get-Tony/ark/issues) on GitHub.
 
 ## [License](./LICENSE)
 
