@@ -1,6 +1,6 @@
 # Ark
 
-Ark is a command-line tool for managing multiple AnsibleRunner environments.
+Ark is a command-line tool for managing multiple Ansible Runner projects.
 
 ## Table of Contents
 
@@ -19,9 +19,9 @@ Ark is a command-line tool for managing multiple AnsibleRunner environments.
 
 ## Requirements
 
-- Python 3.9.2 or higher
-- Ansible Runner 2.3.2 or higher
-- Ansible 7.4.0 or higher
+- Python 3.9.2 or later
+
+See the [pyproject.toml](./pyproject.toml) file for the full list of requirements.
 
 ## Build and Installation
 
@@ -29,7 +29,7 @@ Ark is a command-line tool for managing multiple AnsibleRunner environments.
 
 1. Clone the repository:
 
-        git clone <https://github.com/Get-Tony/Ark.git>
+        git clone https://github.com/Get-Tony/Ark.git
 
 2. Change to the cloned directory:
 
@@ -61,15 +61,13 @@ Ark is a command-line tool for managing multiple AnsibleRunner environments.
 
 ## Warnings
 
-- **Ark is not officially supported** by [Ansible](https://github.com/ansible/ansible) or [Ansible Runner](https://github.com/ansible/ansible-runner). Use at your own risk.
-- Always back up your AnsibleRunner environments before using Ark.
-- If you encounter any issues, please report them!
+- **Ark is not officially supported** by [Ansible](https://github.com/ansible/ansible) or [Ansible Runner](https://github.com/ansible/ansible-runner). Use at your own risk!
+- Use at your own risk! I am not responsible for any data loss or other issues that may occur.
 
 ## Tips and Hints
 
-- Set up the Ark environment variable `ARK_PROJECTS_DIR` to define the projects directory.
+- Define the Ark environment variable `ARK_PROJECTS_DIR` to define the projects directory.
 - Ark uses an SQLite database by default. You can configure the database URL using the `ARK_DB_URL` environment variable.
-- Make sure the Ark projects directory is writable by the user running Ark.
 
 ## [License](./LICENSE)
 
