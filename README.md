@@ -220,7 +220,7 @@ With these settings, Ark will output "INFO" level logs to the console and "DEBUG
 
 ## Issues
 
-If you encounter any issues, please [Report Issues](https://gitgub.com/Get-Tony/ark/issues) on GitHub.
+If you encounter any issues, please [Report Issues](https://github.com/Get-Tony/ark/issues) on GitHub.
 
 ## [License](./LICENSE)
 
