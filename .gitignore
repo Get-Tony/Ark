@@ -1,0 +1,47 @@
+# VS Code
+**/*.code-workspace
+**/.vscode
+
+# Python virtualenv
+.venv/
+
+# Pyenv settings
+.python-version
+
+# Ansible Vault
+.vault_password
+
+# SSH keys
+**/*ssh_key*
+**/*.pub
+
+# Ansible-Runner envvars
+# **/envvars
+
+# Ansible-Runner artifacts
+**/artifacts
+
+# All demo_ files
+**/demo_*
+
+# Cache files
+**/__pycache__
+**/.pytest_cache
+**/.mypy_cache
+**/.ruff_cache
+
+# Environment files
+**/.env*
+**/.envrc*
+
+# Temp files
+**/tmp*
+**/temp__*
+
+# SQLite3 Database files
+**/*.sqlite*
+**/*.db
+
+# Build files
+**/build
+**/dist
