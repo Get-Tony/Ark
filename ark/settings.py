@@ -20,12 +20,29 @@ def load_env_file(projects_dir: str, file_name: str = ".env") -> None:
 
 def get_projects_dir() -> str:
     """Check for a projects directory environment variable.
+    Custom projects directory can be set with the environment variable
+    ARK_PROJECTS_DIR. If not set, the default projects directory is
+    $HOME/ark_projects.
 
-    If not found, use the default.
+    If a defined custom projects directory does not exist,
+    Ark will exit with an error.
     """
     default_projects_dir = str(Path.home().resolve() / "ark_projects")
     projects_dir = os.environ.get("ARK_PROJECTS_DIR", default_projects_dir)
 
+    if projects_dir == default_projects_dir:
+        if not Path(projects_dir).is_dir():
+            print(
+                f"Creating default projects directory '{projects_dir}'.",
+                file=sys.stderr,
+            )
+            Path(projects_dir).mkdir(parents=True, exist_ok=True)
+    if not Path(projects_dir).is_dir():
+        print(
+            f"Error: The projects directory '{projects_dir}' does not exist.",
+            file=sys.stderr,
+        )
+        sys.exit(1)
     return projects_dir
 
 
@@ -34,7 +51,7 @@ class ARKSettings(BaseSettings):  # pylint: disable=too-few-public-methods
 
     PROJECTS_DIR: str = get_projects_dir()
     DB_URL: str = f"sqlite:///{Path(PROJECTS_DIR) / 'ark.db'}"
-    CONSOLE_LOG_LEVEL: str = "WARNING"
+    CONSOLE_LOG_LEVEL: str = "CRITICAL"
     FILE_LOG_LEVEL: str = "INFO"
     ENCODING: str = "utf-8"
     CRONJOB_TAG: str = "#Ark-"
@@ -68,7 +85,7 @@ class ARKSettings(BaseSettings):  # pylint: disable=too-few-public-methods
         try:
             loaded_settings = cls()
         except ValidationError as validation_error:
-            logger.error(validation_error)
+            logger.critical(validation_error)
             sys.exit(1)
         return loaded_settings
 

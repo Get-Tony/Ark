@@ -54,5 +54,5 @@ def run_ansible_playbook(  # pylint: disable=too-many-arguments
             "Playbook failed (return code: %s): '%s'", result.rc, playbook_path
         )
     else:
-        logger.info("Playbook completed successfully: %s", playbook_path)
+        logger.info("Playbook completed successfully: '%s'", playbook_path)
     return result

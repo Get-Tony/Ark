@@ -1,6 +1,5 @@
 """Ark - Inventory Commands."""
 
-import getpass
 import logging
 from typing import Union
 
@@ -11,6 +10,8 @@ from tabulate import tabulate
 from ark.core import inventory
 from ark.settings import config
 
+from .call_logger import log_command_call
+
 logger = logging.getLogger(__name__)
 
 
@@ -20,41 +21,33 @@ def inventory_group() -> None:
 
 
 @inventory_group.command("host-groups")
-@click.argument("target_project", callback=inventory.validate_inventory_dir)
-@click.argument("target_host")
-def get_host_groups(target_project: str, target_host: str) -> None:
+@click.argument("project-name", callback=inventory.validate_inventory_dir)
+@click.argument("inventory-name")
+@log_command_call()
+def get_host_groups(project_name: str, inventory_name: str) -> None:
     """Display all groups a host is a member of."""
-    logger.info(
-        "Command: get_host_groups, User: %s, Hostname: %s",
-        getpass.getuser(),
-        target_host,
-    )
-    host = inventory.get_host(target_project, target_host)
+    host = inventory.get_host(project_name, inventory_name)
+    logger.debug("Host: %s", host)
 
     if not host:
-        click.echo(f"Host '{target_host}' not found in the inventory.")
+        click.echo(f"Host '{inventory_name}' not found in the inventory.")
         return
 
     groups = inventory.get_groups_for_host(host)
-    inventory.display_groups(target_host, groups)
+    inventory.display_groups(inventory_name, groups)
+    logger.debug("Groups: %s", groups)
 
 
-@inventory_group.command("list-members")
+@inventory_group.command("list-hosts")
 @click.argument("target_project", callback=inventory.validate_inventory_dir)
 @click.argument("target_group", required=False, default=None)
+@log_command_call()
 def get_group_members(target_project: str, target_group: str) -> None:
     """Display all hosts in a group.
 
     If no group is specified, display all groups and their members.
     """
-    logger.info(
-        "Command: get_group_hosts, User: %s, Group: %s",
-        getpass.getuser(),
-        target_group,
-    )
-
     if not target_group:
-        click.echo("All groups in the inventory:")
         groups = inventory.get_all_groups(target_project)
         for group in groups:
             click.echo(f"[{group}]")
@@ -79,24 +72,20 @@ def get_group_members(target_project: str, target_group: str) -> None:
 
 @inventory_group.command("check-dns")
 @click.argument(
-    "target_project",
+    "project_name",
     callback=inventory.validate_inventory_dir,
     required=True,
 )
-@click.option("--dns-servers", multiple=True, required=False, default=None)
+@click.option("--dns-server", multiple=True, required=False, default=None)
 @click.option("--timeout", required=False, default=5)
 @click.option("--outfile", required=False, default=None)
+@log_command_call()
 def check_dns(
-    target_project: str, dns_servers: tuple[str], timeout: int, outfile: str
+    project_name: str, dns_server: list[str], timeout: int, outfile: str
 ) -> None:
     """Check if all hosts in the inventory have a valid DNS entry."""
-    logger.info(
-        "Command: check_dns, User: %s, Project: %s",
-        getpass.getuser(),
-        target_project,
-    )
     hosts = inventory.check_project_resolution(
-        target_project, list(dns_servers), timeout, outfile
+        project_name, dns_server, timeout, outfile
     )
     if hosts:
         click.echo(
@@ -106,7 +95,7 @@ def check_dns(
         table_data = [
             {
                 "Hostname": host.get("Hostname"),
-                "No resolution": host.get("No resolution"),
+                "Unresolvable from": host.get("Unresolvable from"),
             }
             for host in hosts
         ]

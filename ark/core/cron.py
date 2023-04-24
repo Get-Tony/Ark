@@ -44,7 +44,7 @@ def create_cronjob(
 
     if existing_jobs:
         logger.warning("A similar cron job already exists. Skipping creation.")
-        logger.debug("Existing cron job(s): %s", existing_jobs)
+        logger.debug("Existing cron job(s): '%s'", existing_jobs)
         return None
 
     # Create the new cron job
@@ -57,7 +57,7 @@ def create_cronjob(
         project_name,
         playbook,
     )
-    logger.debug("Added cron job: %s", job)
+    logger.debug("Added cron job: '%s'", job)
     return job
 
 
@@ -93,7 +93,7 @@ def remove_cronjob(pattern: str) -> None:
     logger.info(
         "Removed cron job(s) matching pattern '%s' from comment", pattern
     )
-    logger.debug("Removed cron job(s): %s", matched_jobs)
+    logger.debug("Removed cron job(s): '%s'", matched_jobs)
 
 
 def remove_all_cronjobs(project_name: Optional[str] = None) -> None:
@@ -108,7 +108,7 @@ def remove_all_cronjobs(project_name: Optional[str] = None) -> None:
         for job in current_jobs:
             cron.remove(job)
         logger.info("Removed all Ark-managed cron jobs")
-        logger.debug("Removed cron job(s): %s", current_jobs)
+        logger.debug("Removed cron job(s): '%s'", current_jobs)
     else:
         current_jobs = [
             job
@@ -117,6 +117,6 @@ def remove_all_cronjobs(project_name: Optional[str] = None) -> None:
         ]
         cron.remove_all(comment=config.CRONJOB_TAG + project_name)
         logger.info("Removed cron job(s) for project '%s'", project_name)
-        logger.debug("Removed cron job(s): %s", current_jobs)
+        logger.debug("Removed cron job(s): '%s'", current_jobs)
 
     cron.write()

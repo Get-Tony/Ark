@@ -5,9 +5,10 @@ import logging
 import re
 from datetime import datetime
 from pathlib import Path
-from typing import List, Optional, Union
+from typing import Any, List, Optional, Union
 
 import click
+from tabulate import tabulate
 
 from ark.settings import config
 
@@ -30,6 +31,39 @@ def echo_or_page(content: str, page: Optional[bool]) -> None:
         click.echo_via_pager(content)
     else:
         click.echo(content)
+
+
+def fuzzy_match_strings(string_a: str, string_b: str) -> bool:
+    """
+    Fuzzy match two strings.
+
+    Args:
+        string_a (str): First string to match.
+        string_b (str): Second string to match.
+
+    Returns:
+        bool: True if the strings match, False otherwise.
+    """
+    string_a = string_a.lower()
+    string_b = string_b.lower()
+    return any(
+        [
+            string_a in string_b,
+            string_b in string_a,
+            string_a == string_b,
+        ]
+    )
+
+
+def convert_bool_to_str(data: Any) -> Any:
+    """Convert boolean values to strings."""
+    if isinstance(data, bool):
+        return str(data)
+    if isinstance(data, list):
+        return [convert_bool_to_str(item) for item in data]
+    if isinstance(data, dict):
+        return {key: convert_bool_to_str(value) for key, value in data.items()}
+    return data
 
 
 def project_name_validation_callback(
@@ -79,7 +113,7 @@ def read_file_contents(
 ) -> Union[str, None]:
     """Read the content of a file and return it as a string."""
     filepath = Path(filepath)
-    logger.debug("Reading file: %s", filepath)
+    logger.debug("Reading file: '%s'", filepath)
     try:
         with open(filepath, "r", encoding=encoding) as current_file:
             content = current_file.read()
@@ -98,18 +132,18 @@ def write_file_contents(
 ) -> bool:
     """Write the content to a file."""
     filepath = Path(filepath)
-    logger.debug("Writing file: %s", filepath)
+    logger.debug("Writing file: '%s'", filepath)
     try:
         with open(filepath, "w", encoding=encoding) as current_file:
             current_file.write(content)
     except PermissionError as permission_error:
         logger.error(
-            "Could not write file: %s. Error: %s",
+            "Could not write file: %s. Error: '%s'",
             filepath,
             permission_error,
         )
         return False
-    logger.debug("Successfully wrote file: %s", filepath)
+    logger.debug("Successfully wrote file: '%s'", filepath)
     return True
 
 
@@ -117,6 +151,16 @@ def validate_project_dir(
     project_name: str,
 ) -> Optional[dict[str, List[Union[str, Path]]]]:
     """Check if the current directory is a valid Ansible-Runner input tree."""
+    if not re.match(r"^[a-zA-Z0-9_-]+$", Path(project_name).name):
+        logger.critical(
+            "Project name '%s' is not valid. It must only contain "
+            "alphanumeric characters, dashes, and underscores.",
+            project_name,
+        )
+        raise click.BadParameter(
+            "Project name is not valid. It must only contain alphanumeric "
+            "characters, dashes, and underscores."
+        )
     required_dirs = [
         Path(config.PROJECTS_DIR) / project_name / "project",
         Path(config.PROJECTS_DIR) / project_name / "inventory",
@@ -136,9 +180,9 @@ def validate_project_dir(
         if not required_dir.is_dir():
             missing_dirs.append(required_dir)
     if missing_dirs:
-        logger.error("Required directories are missing: %s", missing_dirs)
+        logger.critical("Required directories are missing: '%s'", missing_dirs)
     else:
-        logger.debug("No missing directories found for: %s", project_name)
+        logger.debug("No missing directories found for: '%s'", project_name)
 
     # Check for required files
     missing_files: List[Union[str, Path]] = []
@@ -146,9 +190,9 @@ def validate_project_dir(
         if not required_file.is_file():
             missing_files.append(required_file)
     if missing_files:
-        logger.error("Required files are missing: %s", missing_files)
+        logger.critical("Required files are missing: '%s'", missing_files)
     else:
-        logger.debug("No missing files found for: %s", project_name)
+        logger.debug("No missing files found for: '%s'", project_name)
 
     # Return a report if any directories or files are missing
     if any(missing_dirs or missing_files):
@@ -162,7 +206,7 @@ def validate_project_dir(
 
 def find_playbooks(project_name: str) -> List[str]:
     """Find all YAML or YML playbooks in the project directory."""
-    logger.debug("Finding playbooks for: %s", project_name)
+    logger.debug("Finding playbooks for: '%s'", project_name)
     playbooks: List[str] = []
     for playbook in (
         Path(config.PROJECTS_DIR) / project_name / "project"
@@ -173,7 +217,7 @@ def find_playbooks(project_name: str) -> List[str]:
     ).glob("*.yaml"):
         playbooks.append(playbook.name)
     logger.debug(
-        "Found playbooks for %s: %s", project_name, playbooks or "None"
+        "Found playbooks for %s: '%s'", project_name, playbooks or "None"
     )
     return playbooks
 
@@ -186,12 +230,12 @@ def get_playbook_path(project_name: str, playbook_file: str) -> Optional[Path]:
     )
     if not playbook_path.is_file():
         logger.error(
-            "Playbook %s does not exist for Project: %s",
+            "Playbook '%s' does not exist for Project: '%s'",
             playbook_file,
             project_name,
         )
         return None
-    logger.debug("Found playbook: %s", playbook_path)
+    logger.debug("Found playbook: '%s'", playbook_path)
     return playbook_path
 
 
@@ -237,8 +281,7 @@ def display_artifact_report(artifact_path: Path) -> None:
     """Display the report for a single artifact folder."""
     stdout_path: Path = artifact_path / "stdout"
 
-    with stdout_path.open("r", encoding="utf-8") as stdout_file:
-        content = stdout_file.read()
+    content = read_file_contents(stdout_path) or ""
 
     play_recaps = extract_play_recaps(content)
     timestamp = get_artifact_timestamp(stdout_path)
@@ -247,13 +290,26 @@ def display_artifact_report(artifact_path: Path) -> None:
     )
 
     click.echo(f"Report for {artifact_path}:")
-    click.echo(f"{playbook_name or 'Playbook'} executed at: {timestamp}")
-    click.echo("-------------------------")
+    click.echo(f"{playbook_name or 'Playbook'} completed at: {timestamp}")
+
+    headers = ["Host", "ok", "changed", "unreachable", "failed", "skipped"]
+    rows = []
 
     for recap in play_recaps:
         host_stats = extract_host_stats(recap)
         for host, stats in host_stats.items():
-            click.echo(f"{host}: {stats}")
+            row = [
+                host,
+                stats.get("ok", 0),
+                stats.get("changed", 0),
+                stats.get("unreachable", 0),
+                stats.get("failed", 0),
+                stats.get("skipped", 0),
+            ]
+            rows.append(row)
+
+    table = tabulate(rows, headers=headers, tablefmt=config.TABLE_FORMAT)
+    click.echo(table)
     click.echo("")
 
 

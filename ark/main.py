@@ -1,24 +1,27 @@
-"""Ark - Main Module."""
+"""Ark - Main Entry Point."""
 
 import logging
 from pathlib import Path
 
 import click
 
-from ark.cli.cron import cron_group
-from ark.cli.facts import facts_group
-from ark.cli.inventory import inventory_group
-from ark.cli.projects import projects_group
+from ark.cli import (
+    cron_group,
+    facts_group,
+    inventory_group,
+    lint_command,
+    report_command,
+    run_command,
+)
 from ark.database import init_db
-from ark.log_conf import init_logging
+from ark.log_setup import init_logging
 from ark.settings import config
-
-logger = logging.getLogger(__name__)
 
 
 @click.group()
+@click.version_option()
 def ark_cli() -> None:
-    """Ark - Command Line Interface."""
+    """Ark - Streamline Your Ansible Workflow."""
 
 
 def main() -> None:
@@ -28,22 +31,24 @@ def main() -> None:
         file_log_level=config.FILE_LOG_LEVEL,
         log_dir=str(Path(config.PROJECTS_DIR) / "logs"),
     )
-    init_db()
+    logger = logging.getLogger(__name__)
     logger.info("Ark loaded.")
-    if (
-        config.CONSOLE_LOG_LEVEL.strip().upper() == "DEBUG"
-        or config.FILE_LOG_LEVEL.strip().upper() == "DEBUG"
-    ):
-        logger.debug("Debug mode enabled.")
-        logger.debug("Ark settings: %s", config.json(indent=2))
+    logger.debug("Debug mode enabled.")
+    logger.debug("Ark settings: '%s'", config.json(indent=4))
+
+    # Add subcommands
+    ark_cli.add_command(run_command)
+    ark_cli.add_command(lint_command)
+    ark_cli.add_command(report_command)
+    ark_cli.add_command(facts_group)
+    ark_cli.add_command(inventory_group)
+    ark_cli.add_command(cron_group)
+
+    # Initialize the database
+    init_db()
+
+    # Run the CLI
     ark_cli()
-
-
-# Add subcommands
-ark_cli.add_command(projects_group)
-ark_cli.add_command(facts_group)
-ark_cli.add_command(inventory_group)
-ark_cli.add_command(cron_group)
 
 
 if __name__ == "__main__":

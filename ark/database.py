@@ -32,15 +32,16 @@ def init_db(
     db_url: str = config.DB_URL,
 ) -> None:
     """Initiate database tables."""
-    logger.info("Initiating database tables.")
-    logger.debug("Database URL: %s", db_url)
+    logger.debug("Initiating database tables.")
+    logger.debug("Database URL: '%s'", db_url)
     if db_url.startswith("sqlite:///"):
+        logger.debug("Using SQLite database.")
         db_file = Path(db_url.replace("sqlite:///", ""))
         db_file.parent.mkdir(parents=True, exist_ok=True)
     try:
         engine = create_engine(db_url)
         SQLModel.metadata.create_all(engine)
     except OperationalError as error:
-        logger.critical("Failed to create database tables: %s", error)
+        logger.critical("Failed to create database tables: '%s'", error)
         sys.exit(1)
-    logger.info("Database initiated.")
+    logger.info("Database ready.")

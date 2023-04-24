@@ -22,7 +22,7 @@ def ansible_lint_accessible() -> bool:
         logger.debug(lint_version.decode(config.ENCODING).strip())
         return True
     except subprocess.CalledProcessError:
-        logger.error("ansible-lint is not installed.")
+        logger.critical("ansible-lint is not installed.")
         return False
 
 
@@ -35,7 +35,7 @@ def lint_playbook_or_project(
     else:
         lint_target = Path(config.PROJECTS_DIR) / project_name
     if not lint_target:
-        logger.error(
+        logger.critical(
             "Could not find lint target '%s'",
             lint_target,
         )
@@ -54,7 +54,7 @@ def lint_playbook_or_project(
     if verbosity > 0:
         lint_command.append("-" + "v" * verbosity)
     lint_command.append("--nocolor")
-    logger.debug("Lint command: %s", " ".join(lint_command))
+    logger.debug("Lint command: '%s'", " ".join(lint_command))
     result = None
     try:
         process = subprocess.run(
@@ -81,7 +81,7 @@ def lint_playbook_or_project(
         )
         if error_info:
             playbook_path = error_info.group(1)
-            logger.error(
+            logger.critical(
                 "Error linting project '%s'! "
                 "Problematic playbook: '%s', Error: '%s'",
                 project_name,
@@ -89,12 +89,12 @@ def lint_playbook_or_project(
                 linting_error.stderr.strip(),
             )
         else:
-            logger.error("Error linting target '%s':", lint_target)
+            logger.critical("Error linting target '%s':", lint_target)
             indented_stderr = "\n".join(
                 "    " + line if line else line
                 for line in linting_error.stderr.split("\n")
             )
-            logger.error(
+            logger.critical(
                 "%s",
                 indented_stderr,
             )

@@ -165,10 +165,10 @@ def check_project_resolution(  # pylint: disable=too-many-locals
             subprocess.TimeoutExpired,
             subprocess.CalledProcessError,
         ) as timeout_error:
-            logger.error("Error: %s", timeout_error, exc_info=True)
+            logger.error("Error: '%s'", timeout_error, exc_info=True)
             continue
         except ValueError as value_error:
-            logger.error("Error: %s", value_error, exc_info=True)
+            logger.error("Error: '%s'", value_error, exc_info=True)
             continue
 
         if missing_servers:
@@ -178,21 +178,27 @@ def check_project_resolution(  # pylint: disable=too-many-locals
         try:
             with open(output, "w", newline="", encoding="utf-8") as csv_file:
                 writer = csv.writer(csv_file)
-                writer.writerow(["Hostname", "No resolution with"])
+                writer.writerow(["Hostname", "Unresolvable from"])
                 writer.writerows(results)
         except FileNotFoundError as file_error:
-            logger.error(
-                "Error: File not found - %s", file_error, exc_info=True
+            logger.critical(
+                "Error: File not found - '%s'", file_error, exc_info=True
             )
         except PermissionError as perm_error:
-            logger.error(
-                "Error: Permission denied - %s", perm_error, exc_info=True
+            logger.critical(
+                "Error: Permission denied - '%s'", perm_error, exc_info=True
             )
     else:
         unresolvable_hosts: list[dict[str, Any]] = []
         for host, missing_servers in results:
             unresolvable_hosts.append(
-                {"Hostname": host, "No resolution": missing_servers}
+                {"Hostname": host, "Unresolvable from": missing_servers}
+            )
+            logger.warning(
+                "Host '%s' is not resolvable by DNS servers: %s",
+                host,
+                missing_servers,
             )
         return unresolvable_hosts
+
     return None
