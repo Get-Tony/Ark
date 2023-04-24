@@ -9,7 +9,7 @@ import click
 from ark import utils
 from ark.settings import config
 
-from .call_logger import log_command_call
+from .cli_utils import log_command_call
 
 logger = logging.getLogger(__name__)
 

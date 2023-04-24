@@ -1,4 +1,4 @@
-"""Ark - Command Call Logger."""
+"""Ark - Click Related Utilities."""
 
 import getpass
 import logging
