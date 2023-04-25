@@ -6,13 +6,14 @@ Ark is an intuitive command-line tool designed to simplify the management of mul
 
 - [Ark: Streamline Your Ansible Workflow](#ark-streamline-your-ansible-workflow)
   - [Table of Contents](#table-of-contents)
-  - [⚠️ Important Notice ⚠️](#️-important-notice-️)
   - [Requirements](#requirements)
   - [Build and Installation](#build-and-installation)
     - [Build with Poetry](#build-with-poetry)
     - [Installing from Wheel](#installing-from-wheel)
   - [Usage](#usage)
-    - [Projects](#projects)
+    - [Run](#run)
+    - [Report](#report)
+    - [Lint](#lint)
     - [Facts](#facts)
     - [Inventory](#inventory)
     - [Cron](#cron)
@@ -25,16 +26,6 @@ Ark is an intuitive command-line tool designed to simplify the management of mul
   - [Code of Conduct](#code-of-conduct)
   - [Contributing](#contributing)
   - [Security Policy](#security-policy)
-
-## ⚠️ Important Notice ⚠️
-
-Due to recent significant changes, the README below is currently not accurate.  I apologize for any inconvenience and appreciate your understanding.
-
-Documentation within the source code by means of `DocStrings` and `Comments` have already been updated and should be correct.
-
-The updated README **should be available by 26/04/2023**.
-
----
 
 ## Requirements
 
@@ -88,11 +79,9 @@ The wheel file will be located in the `dist` directory. See the [Installing from
 
 ## Usage
 
-### Projects
+### Run
 
-The `projects` command group manages project operations.
-
-Subcommands:
+The `run` command group manages Ansible Runner operations.
 
 - `run`: Run a Project playbook.
   - `project_name`: The name of the project.
@@ -101,9 +90,19 @@ Subcommands:
   - `--limit`: Limit the playbook execution to a specific group or host (default: "").
   - `--extra-vars`: Pass additional variables as key-value pairs (default: "").
   - `-v`, `--verbosity`: Increase the verbosity of the output (default: 0).
+
+### Report
+
+The `report` command group manages Ansible Runner event reports.
+
 - `report`: Display the last x reports for a given project.
   - `project_name`: The name of the project.
   - `-l`, `--last`: Display the last x reports (default: None).
+
+### Lint
+
+The `lint` command group manages Ansible linting.
+
 - `lint`: Lint Project playbooks using ansible-lint.
   - `project_name`: The name of the project.
   - `playbook_file` (optional): The playbook file to lint.
@@ -116,18 +115,20 @@ The `facts` command group manages Ansible Facts operations.
 Subcommands:
 
 - `collect`: Collect facts from the specified directory.
-  - `--directory`: Directory to search for facts (default: `config.PROJECTS_DIR`).
+  - `--project_name`: Directory to search for facts (default: `config.PROJECTS_DIR`).
 - `query`: Query facts for a specific host.
-  - `hostname`: The name of the host to query.
+  - `fqdn`: The name of the host to query.
   - `fact-key` (optional): The fact key to filter by.
+  - `--fuzzy`: Fuzzy search the fact key.
   - `--page`: Page the output.
 - `find`: Find all hosts with a given key, value pair.
   - `fact_key`: The fact key to search for.
   - `fact_value`: The fact value to match.
+  - `--fuzzy`: Fuzzy search the fact key.
   - `--page`: Page the output.
 - `remove`: Remove a host entry from the database.
-  - `hostname`: The name of the host to remove.
-- `list_hosts`: List all hosts in the database.
+  - `fqdn`: The name of the host to remove.
+- `show-hosts`: List all hosts in the database.
   - `--page`: Page the output.
 
 ### Inventory
@@ -136,15 +137,15 @@ The `inventory` command group manages Ansible Inventory operations.
 
 Subcommands:
 
-- `host-groups`: Display all groups a host is a member of.
-  - `target_project`: The target project containing the inventory.
-  - `target_host`: The target host to display the groups for.
-- `list-members`: Display all hosts in a group or all groups and their members if no group is specified.
-  - `target_project`: The target project containing the inventory.
-  - `target_group` (optional): The target group to display the members for.
+- `host-groups`: List all groups a host is a member of.
+  - `project_name`: The project containing the inventory.
+  - `inventory_name`: The host to display the groups for.
+- `list-hosts`: List all hosts in a group or all groups and their members if no group is specified.
+  - `project_name`: The target project containing the inventory.
+  - `group_name` (optional): The target group to display the members for.
 - `check-dns`: Check if all hosts in the inventory have a valid DNS entry.
-  - `target_project`: The target project containing the inventory.
-  - `--dns-servers`: DNS servers to use for checking (default: None).
+  - `project_name`: The target project containing the inventory.
+  - `--dns-server`: DNS server to use for checking (default: None). **Can be specified multiple times**
   - `--timeout`: Timeout for DNS query (default: 5).
   - `--outfile`: Output file to save results (default: None).
 
@@ -165,7 +166,7 @@ Subcommands:
   - `pattern`: The pattern to match cron jobs.
   - `--force`: Skip the confirmation prompt.
 - `wipe`: Remove all Ark-managed cron jobs.
-  - `project_name` (optional): The name of the project to remove cron jobs from.
+  - `project_name` (optional): Specify a project to remove only its cron jobs.
   - `--force`: Skip the confirmation prompt.
 
 ## Settings
@@ -175,7 +176,6 @@ Ark can be configured using environment variables. You can use a `.env` file in 
 Here are the environment variables you can set to configure Ark:
 
 - `ARK_PROJECTS_DIR`: Set the projects directory (default: current working directory).
-- `ARK_DB_URL`: Configure the database URL (default: SQLite database located in the `PROJECTS_DIR`).
 - `ARK_CONSOLE_LOG_LEVEL`: Set the console log level (default: "WARNING").
 - `ARK_FILE_LOG_LEVEL`: Set the file log level (default: "INFO").
 - `ARK_ENCODING`: Configure the encoding used by Ark (default: "utf-8").
@@ -186,12 +186,10 @@ To create a `.env` file in the project's directory, you can use a text editor an
 
 ```ini
 ARK_PROJECTS_DIR=/path/to/projects
-ARK_DB_URL=sqlite:///path/to/database.db
 ARK_CONSOLE_LOG_LEVEL=WARNING
 ARK_FILE_LOG_LEVEL=INFO
 ARK_ENCODING=utf-8
 ARK_DNS_SERVERS=1.1.1.1,8.8.8.8
-ARK_TABLE_FORMAT=psql
 ```
 
 Save the file as .env in the project's directory. The environment variables will be automatically loaded when running Ark. To override any of these settings, simply set an environment variable with the same name outside of the dotenv file.
@@ -217,7 +215,7 @@ To customize the logging behavior, you can modify the following environment vari
 Example of a `.env` file with custom logging settings:
 
 ```ini
-ARK_CONSOLE_LOG_LEVEL=INFO
+ARK_CONSOLE_LOG_LEVEL=WARNING
 ARK_FILE_LOG_LEVEL=DEBUG
 ```
 
