@@ -42,6 +42,6 @@
 **/*.sqlite*
 **/*.db
 
-# Build files
-**/build
-**/dist
+# Build ans dist directories
+**/*build
+**/*dist
