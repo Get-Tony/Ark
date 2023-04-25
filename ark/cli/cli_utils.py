@@ -1,4 +1,5 @@
 """Ark - Click Related Utilities."""
+__author__ = "Anthony Pagan <Get-Tony@outlook.com>"
 
 import getpass
 import logging

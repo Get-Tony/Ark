@@ -1,4 +1,5 @@
 """Ark - Settings."""
+__author__ = "Anthony Pagan <Get-Tony@outlook.com>"
 
 import logging
 import os

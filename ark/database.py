@@ -1,4 +1,5 @@
 """Ark - Database Session Management."""
+__author__ = "Anthony Pagan <Get-Tony@outlook.com>"
 
 import logging
 import sys

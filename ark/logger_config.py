@@ -1,4 +1,5 @@
 """Ark - Logging."""
+__author__ = "Anthony Pagan <Get-Tony@outlook.com>"
 
 import logging
 from logging.handlers import RotatingFileHandler

@@ -1,4 +1,5 @@
 """Ark - Reporting Commands."""
+__author__ = "Anthony Pagan <Get-Tony@outlook.com>"
 
 import logging
 from pathlib import Path

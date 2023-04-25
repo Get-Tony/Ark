@@ -1,4 +1,5 @@
 """Ark - Cronjob Commands."""
+__author__ = "Anthony Pagan <Get-Tony@outlook.com>"
 
 import logging
 from typing import Optional

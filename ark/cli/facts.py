@@ -1,4 +1,5 @@
 """Ark - Ansible Facts Commands."""
+__author__ = "Anthony Pagan <Get-Tony@outlook.com>"
 
 import json
 import logging

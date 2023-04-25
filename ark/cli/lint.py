@@ -1,4 +1,5 @@
 """Ark - Ansible Linting Commands."""
+__author__ = "Anthony Pagan <Get-Tony@outlook.com>"
 
 import logging
 

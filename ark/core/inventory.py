@@ -1,4 +1,5 @@
 """Ark - Ansible Inventory Management."""
+__author__ = "Anthony Pagan <Get-Tony@outlook.com>"
 
 import csv
 import logging
