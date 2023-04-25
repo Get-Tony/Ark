@@ -1,16 +1,25 @@
-# Tool configured is located in the pyproject.toml file.
+# Tool configuration is handled in the pyproject.toml file.
 # Author: Anthony Pagan <get-tony@outlook.com>
-# Usage: make [target]
 
 EXCLUDED_DIRS := -path "./temp__src" -o -path "./venv" -o -path "./env" -o -path "./.venv" -o -path "./.env" -path "./.git" -o -path "./.mypy_cache" -o -path "./.pytest_cache" -o -path "./.coverage" -o -path "./.ruff_cache"
 PYTHON_FILES := $(shell find . -type d \( $(EXCLUDED_DIRS) \) -prune -o -type f -name "*.py" -print)
 YAML_FILES := $(shell find . -type d \( $(EXCLUDED_DIRS) \) -prune -o -type f \( -name "*.yaml" -o -name "*.yml" \) -print)
 
-all: lint-python lint-yaml checks_passed
+.PHONY: all lint lint-python lint-yaml lint-with-mypy lint-with-black lint-with-pylint lint-with-ruff lint-with-ansible wipe-cache checks_passed
 
-lint-python: lint-with-black lint-with-ruff lint-with-mypy lint-with-pylint
+all:
+	@echo "Available options:"
+	@echo "  - lint: Run Python and YAML linters"
+	@echo "  - lint-python: Run Python linters"
+	@echo "  - lint-yaml: Run YAML linters"
+	@echo "  - wipe-cache: Remove cache directories"
+	@echo "Example usage: make lint"
 
-lint-yaml: lint-with-ansible
+lint: lint-python lint-yaml
+
+lint-python: lint-with-black lint-with-ruff lint-with-mypy lint-with-pylint checks_passed
+
+lint-yaml: lint-with-ansible checks_passed
 
 lint-with-mypy:
 	@echo "Running mypy..."
@@ -38,5 +47,3 @@ wipe-cache:
 
 checks_passed:
 	@echo "All checks passed"
-
-.PHONY: all lint-python lint-yaml lint-with-mypy lint-with-black lint-with-pylint lint-with-ruff lint-with-ansible wipe-cache checks_passed

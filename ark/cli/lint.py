@@ -5,9 +5,9 @@ import logging
 
 import click
 
-from ark.core import linter
+from ark.core import lint
 
-from .cli_utils import log_command_call, project_name_validation_callback
+from .utilities import log_command_call, project_name_validation_callback
 
 logger = logging.getLogger(__name__)
 
@@ -38,13 +38,13 @@ def lint_command(
         playbook_file (str): Playbook file.
         verbosity (int): Verbosity level.
     """
-    if not linter.ansible_lint_accessible():
+    if not lint.ansible_lint_accessible():
         click.echo("ansible-lint is not installed.")
         return
 
     if playbook_file:
         click.echo(f"Linting '{playbook_file}'...")
-        result = linter.lint_playbook_or_project(
+        result = lint.lint_playbook_or_project(
             project_name, playbook_file, verbosity
         )
         if result:
@@ -55,7 +55,7 @@ def lint_command(
             return
     else:
         click.echo(f"Linting all playbooks in project '{project_name}'...")
-        result = linter.lint_playbook_or_project(
+        result = lint.lint_playbook_or_project(
             project_name=project_name, playbook_file=None, verbosity=verbosity
         )
         if result:

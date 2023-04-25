@@ -9,7 +9,7 @@ import click
 from ark.core import run
 from ark.settings import config
 
-from .cli_utils import log_command_call, project_name_validation_callback
+from .utilities import log_command_call, project_name_validation_callback
 
 logger = logging.getLogger(__name__)
 

@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "ark"
-version = "0.3.1"
+version = "0.3.2"
 description = "A command-line tool for managing Ansible Runner Projects."
 authors = ["Anthony Pagan <get-tony@outlook.com>"]
 readme = "README.md"
@@ -8,7 +8,7 @@ homepage = "https://github.com/Get-Tony/Ark"
 license = "MIT"
 repository = "https://github.com/Get-Tony/Ark"
 keywords = ["ansible", "devops", "cli"]
-include = ["CODE_OF_CONDUCT.md", "CONTRIBUTING.md", "SECURITY.md", "LICENSE", "README.md", "ark/py.typed"]
+include = ["ark/py.typed"]
 
 [tool.poetry.dependencies]
 python = "^3.9.2"
@@ -20,6 +20,11 @@ tabulate = "^0.9.0"
 types-tabulate = "^0.9.0.2"
 python-crontab = "^2.7.1"
 ansible = "^7.4.0"
+sphinx = "^6.2.0"
+sphinx-rtd-theme = "^1.2.0"
+
+[tool.poetry.extras]
+docs =["Sphinx", "sphinx-rtd-theme", "sphinxcontrib-napoleon"]
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^6.2.5"

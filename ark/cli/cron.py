@@ -8,7 +8,7 @@ import click
 
 from ark.core import cron
 
-from .cli_utils import log_command_call
+from .utilities import log_command_call
 
 logger = logging.getLogger(__name__)
 

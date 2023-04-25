@@ -11,7 +11,7 @@ from tabulate import tabulate
 from ark.core import inventory
 from ark.settings import config
 
-from .cli_utils import log_command_call
+from .utilities import log_command_call
 
 logger = logging.getLogger(__name__)
 

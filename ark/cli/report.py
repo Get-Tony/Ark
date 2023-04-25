@@ -12,7 +12,7 @@ from ark.core import report
 from ark.settings import config
 from ark.utils import read_file_contents
 
-from .cli_utils import log_command_call, project_name_validation_callback
+from .utilities import log_command_call, project_name_validation_callback
 
 logger = logging.getLogger(__name__)
 

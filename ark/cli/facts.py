@@ -13,7 +13,7 @@ from ark.core import facts
 from ark.models.facts import AnsibleHostFacts
 from ark.settings import config
 
-from .cli_utils import echo_or_page, log_command_call
+from .utilities import echo_or_page, log_command_call
 
 logger = logging.getLogger(__name__)
 
