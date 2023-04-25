@@ -1,4 +1,4 @@
-"""Ark - Ansible Facts Collector."""
+"""Ark - Ansible Facts."""
 
 import json
 import logging
@@ -9,15 +9,27 @@ from sqlalchemy.exc import IntegrityError
 from sqlmodel import Session
 
 from ark import utils
-from ark.database import get_session
+from ark.database import get_session, init_db
 from ark.models.facts import AnsibleHostFacts
 from ark.settings import config
 
 logger = logging.getLogger(__name__)
 
 
-def find_caches(target_dir: Optional[utils.PathLike] = None) -> list[Path]:
-    """Find all fact caches in a target directory."""
+init_db()
+
+
+def find_caches(target_dir: Optional[str] = None) -> list[Path]:
+    """
+    Find all fact cache directories.
+
+    Args:
+        target_dir (Optional[str], optional): Target directory.
+            Defaults to None.
+
+    Returns:
+        list[Path]: List of fact cache directories.
+    """
     if target_dir:
         projects_path = Path(target_dir).resolve()
     else:
@@ -35,25 +47,31 @@ def find_caches(target_dir: Optional[utils.PathLike] = None) -> list[Path]:
 def load_cache_dirs(
     fact_cache_paths: list[Path],
 ) -> dict[str, AnsibleHostFacts]:
-    """Load all fact caches from the fact cache directories."""
+    """
+    Load all fact cache directories.
+
+    Args:
+        fact_cache_paths (list[Path]): List of fact cache directories.
+
+    Returns:
+        dict[str, AnsibleHostFacts]: Dictionary of AnsibleHostFacts objects.
+    """
 
     def create_ansible_host_facts(host_fact_path: Path) -> AnsibleHostFacts:
         """Create AnsibleHostFacts object."""
         hostname = host_fact_path.name.replace(" ", "_").lower()
-        logger.debug("Processing fact path: '%s'", host_fact_path)
-        logger.debug("Loading facts for: '%s'", hostname)
+        logger.debug(
+            "Loading facts for '%s' from '%s'", hostname, host_fact_path
+        )
         host_facts = json.loads(host_fact_path.read_text())
         new_entry: AnsibleHostFacts = AnsibleHostFacts.from_json(
             json.dumps(host_facts)
         )
-        dist_version = new_entry.distribution_version
-        logger.debug("Distribution version: '%s'", dist_version)
 
         return new_entry
 
     host_facts = {}
     for fact_cache_path in fact_cache_paths:
-        logger.debug("Processing fact cache path: '%s'", fact_cache_path)
         for host_fact_path in fact_cache_path.iterdir():
             if host_fact_path.is_file():
                 hostname = host_fact_path.name.replace(" ", "_").lower()
@@ -69,7 +87,16 @@ def load_cache_dirs(
 def merge_and_compare_facts(
     existing_facts: str, new_facts: str
 ) -> Tuple[bool, str]:
-    """Merge and compare facts."""
+    """
+    Merge and compare facts.
+
+    Args:
+        existing_facts (str): Existing facts.
+        new_facts (str): New facts.
+
+    Returns:
+        Tuple[bool, str]: _description_
+    """
     existing_facts_dict = json.loads(existing_facts)
     new_facts_dict = json.loads(new_facts)
     merged_facts = existing_facts_dict.copy()
@@ -83,7 +110,21 @@ def merge_and_compare_facts(
 def store_facts(
     host_facts: Dict[str, AnsibleHostFacts], session: Optional[Session] = None
 ) -> list[str]:
-    """Store facts in the database."""
+    """
+    Store facts in the database.
+
+    Args:
+        host_facts (Dict[str, AnsibleHostFacts]): Host facts.
+        session (Optional[Session], optional): Database session.
+            Defaults to None.
+
+    Raises:
+        ValueError: Session is required.
+        integrity_error: Unknown IntegrityError occurred.
+
+    Returns:
+        list[str]: List of updated hosts.
+    """
     if not session:
         raise ValueError("Session is required.")
 
@@ -140,7 +181,23 @@ def query_host_facts(
     fuzzy: bool = False,
     session: Optional[Session] = None,
 ) -> Generator[Tuple[str, Any], None, None]:
-    """Query host facts from the database."""
+    """
+    Query host facts.
+
+    Args:
+        fqdn (str): Fully qualified domain name.
+        fact_key (Optional[str], optional): Ansible fact key.
+            Defaults to None.
+        fuzzy (bool, optional): Fuzzy match fact key. Defaults to False.
+        session (Optional[Session], optional): Database session.
+            Defaults to None.
+
+    Raises:
+        ValueError: Session is required.
+
+    Yields:
+        Generator[Tuple[str, Any], None, None]: Fact key and value.
+    """
     if not session:
         raise ValueError("Session is required.")
 
@@ -184,7 +241,22 @@ def query_hosts_by_fact(
     fuzzy: bool = False,
     session: Optional[Session] = None,
 ) -> Generator[Tuple[str, Dict[str, Any]], None, None]:
-    """Query hosts by fact from the database."""
+    """
+    Query hosts by fact.
+
+    Args:
+        fact_key (str): Fact key.
+        fact_value (Any): Fact value.
+        fuzzy (bool, optional): Fuzzy match fact key. Defaults to False.
+        session (Optional[Session], optional): Database session.
+            Defaults to None.
+
+    Raises:
+        ValueError: Session is required.
+
+    Yields:
+        Generator[Tuple[str, Dict[str, Any]], None, None]: Host and facts.
+    """
     if not session:
         raise ValueError("Session is required.")
 
@@ -234,7 +306,20 @@ def query_hosts_by_fact(
 
 @get_session
 def remove_host(fqdn: str, session: Optional[Session] = None) -> bool:
-    """Remove host from the database."""
+    """
+    Remove a host from the database.
+
+    Args:
+        fqdn (str): Fully qualified domain name.
+        session (Optional[Session], optional): Database session.
+            Defaults to None.
+
+    Raises:
+        ValueError: Session is required.
+
+    Returns:
+        bool: True if host was removed, False otherwise.
+    """
     if not session:
         raise ValueError("Session is required.")
 
@@ -253,7 +338,19 @@ def remove_host(fqdn: str, session: Optional[Session] = None) -> bool:
 
 @get_session
 def get_all_hosts(session: Optional[Session] = None) -> list[AnsibleHostFacts]:
-    """List all hosts in the database."""
+    """
+    Get all hosts from the database.
+
+    Args:
+        session (Optional[Session], optional): Database session.
+            Defaults to None.
+
+    Raises:
+        ValueError: Session is required.
+
+    Returns:
+        list[AnsibleHostFacts]: List of AnsibleHostFacts objects.
+    """
     if not session:
         raise ValueError("Session is required.")
 

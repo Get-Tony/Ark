@@ -1,4 +1,4 @@
-"""Ark - Main Entry Point."""
+"""Ark."""
 
 import logging
 from pathlib import Path
@@ -13,8 +13,7 @@ from ark.cli import (
     report_command,
     run_command,
 )
-from ark.database import init_db
-from ark.log_setup import init_logging
+from ark.logger_config import init_logging
 from ark.settings import config
 
 
@@ -25,16 +24,24 @@ def ark_cli() -> None:
 
 
 def main() -> None:
-    """Ark main entry point."""
+    """Ark - Main entry point."""
     init_logging(
         console_log_level=config.CONSOLE_LOG_LEVEL,
         file_log_level=config.FILE_LOG_LEVEL,
-        log_dir=str(Path(config.PROJECTS_DIR) / "logs"),
+        log_dir=Path(config.PROJECTS_DIR) / "logs",
     )
     logger = logging.getLogger(__name__)
     logger.info("Ark loaded.")
-    logger.debug("Debug mode enabled.")
-    logger.debug("Ark settings: '%s'", config.json(indent=4))
+    if any(
+        [
+            logging.getLevelName(config.CONSOLE_LOG_LEVEL.strip().upper())
+            == logging.DEBUG,
+            logging.getLevelName(config.FILE_LOG_LEVEL.strip().upper())
+            == logging.DEBUG,
+        ]
+    ):
+        logger.warning("Debug mode enabled.")
+        logger.warning("Ark settings: '%s'", config.json(indent=4))
 
     # Add subcommands
     ark_cli.add_command(run_command)
@@ -43,9 +50,6 @@ def main() -> None:
     ark_cli.add_command(facts_group)
     ark_cli.add_command(inventory_group)
     ark_cli.add_command(cron_group)
-
-    # Initialize the database
-    init_db()
 
     # Run the CLI
     ark_cli()

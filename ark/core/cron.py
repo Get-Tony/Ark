@@ -1,4 +1,4 @@
-"""Ark - CronJob Manager."""
+"""Ark - Cronjob."""
 
 import logging
 from typing import List, Optional
@@ -17,7 +17,27 @@ def create_cronjob(
     hourly_minute: int = 30,
     daily_hour: int = 4,
 ) -> Optional[CronItem]:
-    """Create a cronjob to run a project's playbook."""
+    """
+    Create a new cronjob.
+
+    Args:
+        project_name (str): Project name.
+        playbook (str): Playbook name.
+        loop (str, optional): Either 'hourly' or 'daily'. Defaults to "hourly".
+        hourly_minute (int, optional): Which minute of the hour to run the
+            cronjob. Defaults to 30.
+        daily_hour (int, optional): Which hour of the day to run the cronjob.
+            Defaults to 4.
+
+    Raises:
+        ValueError: Loop value is not 'hourly' or 'daily'.
+        ValueError: Hourly minute is not between 0 and 59.
+        ValueError: Daily hour is not between 0 and 23.
+
+    Returns:
+        Optional[CronItem]: CronItem object or None if a similar cronjob
+            already exists.
+    """
     if loop not in ["hourly", "daily"]:
         raise ValueError(
             "Invalid loop value. Choose either 'hourly' or 'daily'."
@@ -43,7 +63,7 @@ def create_cronjob(
     ]
 
     if existing_jobs:
-        logger.warning("A similar cron job already exists. Skipping creation.")
+        logger.error("A similar cron job already exists. Skipping creation.")
         logger.debug("Existing cron job(s): '%s'", existing_jobs)
         return None
 
@@ -62,7 +82,12 @@ def create_cronjob(
 
 
 def list_ark_cronjobs() -> List[CronItem]:
-    """List all Ark-managed cronjobs."""
+    """
+    List all Ark-managed cronjobs.
+
+    Returns:
+        List[CronItem]: List of CronItem objects.
+    """
     cron = CronTab(user=True)
     logger.debug("Listing all cron jobs")
     ark_jobs = [
@@ -73,7 +98,15 @@ def list_ark_cronjobs() -> List[CronItem]:
 
 
 def find_cronjobs(pattern: str) -> List[CronItem]:
-    """Find any Ark-managed cronjobs containing the pattern."""
+    """
+    Find Ark-managed cronjobs containing the pattern.
+
+    Args:
+        pattern (str): Pattern to search for.
+
+    Returns:
+        List[CronItem]: List of CronItem objects.
+    """
     cron = CronTab(user=True)
     return [
         job
@@ -84,7 +117,12 @@ def find_cronjobs(pattern: str) -> List[CronItem]:
 
 
 def remove_cronjob(pattern: str) -> None:
-    """Remove any Ark-managed cronjobs containing the pattern."""
+    """
+    Remove a cronjob.
+
+    Args:
+        pattern (str): Pattern to search for.
+    """
     cron = CronTab(user=True)
     matched_jobs = find_cronjobs(pattern)
     for job in matched_jobs:
@@ -97,8 +135,12 @@ def remove_cronjob(pattern: str) -> None:
 
 
 def remove_all_cronjobs(project_name: Optional[str] = None) -> None:
-    """Removes all Ark-managed cronjobs for a given project.
-    If no project name is given, removes all Ark-managed cronjobs.
+    """
+    Remove all Ark-managed cronjobs.
+
+    Args:
+        project_name (Optional[str], optional): Project name.
+            Defaults to None.
     """
     cron = CronTab(user=True)
     if not project_name:

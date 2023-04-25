@@ -1,13 +1,12 @@
-"""Ark - Project Commands."""
+"""Ark - Ansible Linting Commands."""
 
 import logging
 
 import click
 
-from ark import utils
 from ark.core import linter
 
-from .cli_utils import log_command_call
+from .cli_utils import log_command_call, project_name_validation_callback
 
 logger = logging.getLogger(__name__)
 
@@ -16,7 +15,7 @@ logger = logging.getLogger(__name__)
 @click.argument(
     "project_name",
     type=click.Path(exists=False),
-    callback=utils.project_name_validation_callback,
+    callback=project_name_validation_callback,
 )
 @click.argument("playbook_file", type=click.Path(exists=False), default="")
 @click.option(
@@ -30,7 +29,14 @@ logger = logging.getLogger(__name__)
 def lint_command(
     project_name: str, playbook_file: str, verbosity: int
 ) -> None:
-    """Lint Project playbooks using ansible-lint."""
+    """
+    Lint an Ansible playbook or project.
+
+    Args:
+        project_name (str): Project name.
+        playbook_file (str): Playbook file.
+        verbosity (int): Verbosity level.
+    """
     if not linter.ansible_lint_accessible():
         click.echo("ansible-lint is not installed.")
         return

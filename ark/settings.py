@@ -12,14 +12,23 @@ logger = logging.getLogger(__name__)
 
 
 def load_env_file(projects_dir: str, file_name: str = ".env") -> None:
-    """Load environment variables from a .env file."""
+    """
+    Load environment variables from a file.
+
+    Args:
+        projects_dir (str): The projects directory.
+        file_name (str, optional): The name of the environment file.
+            Defaults to ".env".
+    """
     env_file = Path(projects_dir) / file_name
     if env_file.is_file():
         dotenv.load_dotenv(str(env_file))
 
 
 def get_projects_dir() -> str:
-    """Check for a projects directory environment variable.
+    """
+    Check for a projects directory environment variable.
+
     Custom projects directory can be set with the environment variable
     ARK_PROJECTS_DIR. If not set, the default projects directory is
     $HOME/ark_projects.
@@ -51,12 +60,12 @@ class ARKSettings(BaseSettings):  # pylint: disable=too-few-public-methods
 
     PROJECTS_DIR: str = get_projects_dir()
     DB_URL: str = f"sqlite:///{Path(PROJECTS_DIR) / 'ark.db'}"
-    CONSOLE_LOG_LEVEL: str = "CRITICAL"
+    CONSOLE_LOG_LEVEL: str = "WARNING"
     FILE_LOG_LEVEL: str = "INFO"
     ENCODING: str = "utf-8"
     CRONJOB_TAG: str = "#Ark-"
     RUN_SCRIPT: str = str(Path(PROJECTS_DIR) / "ark_run_script.sh")
-    DNS_SERVERS: str = "1.1.1.1,8.8.8.8"
+    DNS_SERVERS: str = "8.8.8.8"  # Google DNS
     TABLE_FORMAT: str = "psql"
 
     class Config:  # pylint: disable=too-few-public-methods
@@ -69,7 +78,7 @@ class ARKSettings(BaseSettings):  # pylint: disable=too-few-public-methods
     @validator("ENCODING", pre=True)
     @classmethod
     def validate_encoding(cls, value: str) -> str:
-        """Validate the encoding."""
+        """Validate Encoding."""
         try:
             "test".encode(value)
         except LookupError as lookup_error:

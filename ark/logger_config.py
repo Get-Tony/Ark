@@ -1,9 +1,9 @@
-"""Ark - Logging Configuration."""
+"""Ark - Logging."""
 
 import logging
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Union
 
 from ark.settings import config
 
@@ -11,26 +11,26 @@ from ark.settings import config
 def init_logging(
     console_log_level: str = config.CONSOLE_LOG_LEVEL,
     file_log_level: str = config.FILE_LOG_LEVEL,
-    log_dir: Optional[str] = None,
+    log_dir: Optional[Union[str, Path]] = None,
     backup_count: int = 5,
-    max_bytes: int = 15 * 1024 * 1024,
+    max_mb: int = 15,
 ) -> None:
     """
     Initialize logging with separate log levels for console and file logging.
 
     Logging to file is optional.
-            If log_dir is not specified, logging to file is disabled.
+        If log_dir is set to None, logging to file will be disabled.
 
     Args:
         console_log_level (str, optional): Log level for console output.
             Defaults to "WARNING".
         file_log_level (str, optional): Log level for file output.
             Defaults to "INFO".
-        log_dir (str, optional): Directory to store log files.
-            Defaults to None.
+        log_dir (Optional[Union[str, Path]], optional): Directory to store log
+            files. Defaults to None.
         backup_count (int, optional): Number of log files to keep.
             Defaults to 5.
-        max_bytes (int, optional): Maximum size of log file.
+        max_mb (int, optional): Maximum size of log file.
             Defaults to 15MB.
     """
     valid_console_level: int = getattr(
@@ -43,6 +43,9 @@ def init_logging(
     log_formatter = logging.Formatter(
         "%(asctime)s - %(name)s - %(levelname)s - %(funcName)s - %(message)s"
     )
+
+    # Convert max_mb to bytes for RotatingFileHandler
+    max_mb = max_mb * 1024 * 1024
 
     logger = logging.getLogger()
     logger.setLevel(logging.NOTSET)
@@ -59,7 +62,7 @@ def init_logging(
 
         file_handler = RotatingFileHandler(
             log_file,
-            maxBytes=max_bytes,
+            maxBytes=max_mb,
             backupCount=backup_count,
             encoding=config.ENCODING,
             delay=False,

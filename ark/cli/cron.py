@@ -1,4 +1,4 @@
-"""Ark - CronJob Commands."""
+"""Ark - Cronjob Commands."""
 
 import logging
 from typing import Optional
@@ -43,7 +43,18 @@ def add_cron_job(
     hourly_minute: int,
     daily_hour: int,
 ) -> None:
-    """Add a new cron job."""
+    """
+    Add a new Ark-managed cron job.
+
+    Args:
+        project_name (str): Project name.
+        playbook (str): Playbook name.
+        loop (str): Either 'hourly' or 'daily'. Defaults to "hourly".
+        hourly_minute (int): Which minute of the hour to run the cronjob.
+            Defaults to 30.
+        daily_hour (int): Which hour of the day to run the cronjob.
+            Defaults to 4.
+    """
     new_job = cron.create_cronjob(
         project_name=project_name,
         playbook=playbook,
@@ -71,7 +82,13 @@ def list_cron_jobs() -> None:
 @click.option("--force", is_flag=True, help="Skip confirmation prompt.")
 @log_command_call()
 def remove_cron_job(pattern: str, force: bool) -> None:
-    """Remove any Ark-managed cron jobs matching a given pattern."""
+    """
+    Remove all Ark-managed cron jobs matching a pattern.
+
+    Args:
+        pattern (str): Pattern to match.
+        force (bool): Skip confirmation prompt.
+    """
     if not force:
         click.echo("Ark-managed cron jobs:")
         for job in cron.list_ark_cronjobs():
@@ -91,7 +108,13 @@ def remove_cron_job(pattern: str, force: bool) -> None:
 @click.option("--force", is_flag=True, help="Skip confirmation prompt.")
 @log_command_call()
 def wipe_cron_jobs(project_name: Optional[str], force: bool) -> None:
-    """Remove all Ark-managed cron jobs."""
+    """
+    Remove all Ark-managed cron jobs.
+
+    Args:
+        project_name (Optional[str]): Project name.
+        force (bool): Skip confirmation prompt.
+    """
     if not force:
         click.echo("Ark-managed cron jobs:")
         for job in cron.list_ark_cronjobs():

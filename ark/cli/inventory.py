@@ -1,4 +1,4 @@
-"""Ark - Inventory Commands."""
+"""Ark - Ansible Inventory Management Commands."""
 
 import logging
 from typing import Union
@@ -25,7 +25,13 @@ def inventory_group() -> None:
 @click.argument("inventory-name")
 @log_command_call()
 def get_host_groups(project_name: str, inventory_name: str) -> None:
-    """Display all groups a host is a member of."""
+    """
+    Display all groups a host belongs to.
+
+    Args:
+        project_name (str): Project name.
+        inventory_name (str): Host name.
+    """
     host = inventory.get_host(project_name, inventory_name)
     logger.debug("Host: %s", host)
 
@@ -39,16 +45,19 @@ def get_host_groups(project_name: str, inventory_name: str) -> None:
 
 
 @inventory_group.command("list-hosts")
-@click.argument("target_project", callback=inventory.validate_inventory_dir)
-@click.argument("target_group", required=False, default=None)
+@click.argument("project_name", callback=inventory.validate_inventory_dir)
+@click.argument("group_name", required=False, default=None)
 @log_command_call()
-def get_group_members(target_project: str, target_group: str) -> None:
-    """Display all hosts in a group.
-
-    If no group is specified, display all groups and their members.
+def get_group_members(project_name: str, group_name: str) -> None:
     """
-    if not target_group:
-        groups = inventory.get_all_groups(target_project)
+    Display all hosts in a group.
+
+    Args:
+        project_name (str): Project name.
+        group_name (str): Group name.
+    """
+    if not group_name:
+        groups = inventory.get_all_groups(project_name)
         for group in groups:
             click.echo(f"[{group}]")
             hosts = inventory.get_hosts_for_group(groups[group])
@@ -57,12 +66,12 @@ def get_group_members(target_project: str, target_group: str) -> None:
             click.echo()
         return
 
-    host_group = inventory.get_group(target_project, target_group)
+    host_group = inventory.get_group(project_name, group_name)
 
     if not host_group:
-        click.echo(f"Group '{target_group}' not found in the inventory.")
+        click.echo(f"Group '{group_name}' not found in the inventory.")
         return
-    click.echo(f"[{target_group}]")
+    click.echo(f"[{group_name}]")
     group_hosts: list[Union[Host, None]] = inventory.get_hosts_for_group(
         host_group
     )
@@ -83,7 +92,15 @@ def get_group_members(target_project: str, target_group: str) -> None:
 def check_dns(
     project_name: str, dns_server: list[str], timeout: int, outfile: str
 ) -> None:
-    """Check if all hosts in the inventory have a valid DNS entry."""
+    """
+    Check DNS resolution for all hosts in an inventory.
+
+    Args:
+        project_name (str): Project name.
+        dns_server (list[str]): List of DNS servers to check.
+        timeout (int): Timeout in seconds.
+        outfile (str): Output file.
+    """
     hosts = inventory.check_project_resolution(
         project_name, dns_server, timeout, outfile
     )

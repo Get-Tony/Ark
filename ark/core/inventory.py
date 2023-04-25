@@ -17,20 +17,37 @@ from ark.settings import config
 logger = logging.getLogger(__name__)
 
 
-def get_host(target_project: str, target_host: str) -> Union[Host, None]:
-    """Get a host from the inventory."""
+def get_host(project_name: str, host_name: str) -> Union[Host, None]:
+    """
+    Get a host from a project.
+
+    Args:
+        project_name (str): Project name.
+        host_name (str): Host name.
+
+    Returns:
+        Union[Host, None]: Host object or None if the host does not exist.
+    """
     data_loader = DataLoader()
     inventory = InventoryManager(
         loader=data_loader,
         sources=[
-            str(Path(config.PROJECTS_DIR) / target_project / "inventory"),
+            str(Path(config.PROJECTS_DIR) / project_name / "inventory"),
         ],
     )
-    return inventory.get_host(target_host)
+    return inventory.get_host(host_name)
 
 
 def get_project_hosts(target_project: str) -> list[Host]:
-    """Get all hosts in a project."""
+    """
+    Get all hosts in a project.
+
+    Args:
+        target_project (str): Project name.
+
+    Returns:
+        list[Host]: List of hosts.
+    """
     data_loader = DataLoader()
     inventory = InventoryManager(
         loader=data_loader,
@@ -46,56 +63,96 @@ def get_project_hosts(target_project: str) -> list[Host]:
 
 
 def get_groups_for_host(host: Host) -> list[str]:
-    """Get all groups a host is a member of."""
+    """
+    Get all groups a host is a member of.
+
+    Args:
+        host (Host): Host object.
+
+    Returns:
+        list[str]: List of groups.
+    """
     groups = []
     for group in host.groups:
         groups.append(group.name)
     return groups
 
 
-def display_groups(target_host: str, groups: list[str]) -> None:
-    """Display all groups a host is a member of."""
-    click.echo(f"Host '{target_host}' is a member of the following groups:")
+def display_groups(host_name: str, groups: list[str]) -> None:
+    """
+    Display all groups a host is a member of.
+
+    Args:
+        host_name (str): Host name.
+        groups (list[str]): List of groups.
+    """
+    click.echo(f"Host '{host_name}' is a member of the following groups:")
     for group in groups:
         click.echo(f"- {group}")
 
 
-def get_group(target_project: str, target_group: str) -> Union[Group, None]:
-    """Get a group from the inventory."""
+def get_group(project_name: str, group_name: str) -> Union[Group, None]:
+    """
+    Get a group from a project.
+
+    Args:
+        project_name (str): Project name.
+        group_name (str): Group name.
+
+    Returns:
+        Union[Group, None]: Group object or None if the group does not exist.
+    """
     data_loader = DataLoader()
     inventory = InventoryManager(
         loader=data_loader,
-        sources=[
-            str(Path(config.PROJECTS_DIR) / target_project / "inventory")
-        ],
+        sources=[str(Path(config.PROJECTS_DIR) / project_name / "inventory")],
     )
-    return inventory.groups.get(target_group)
+    return inventory.groups.get(group_name)
 
 
 def get_hosts_for_group(group: Group) -> list[Union[Host, None]]:
-    """Get all hosts in a group."""
+    """
+    Get all hosts in a group.
+
+    Args:
+        group (Group): Group object.
+
+    Returns:
+        list[Union[Host, None]]: List of hosts.
+    """
     host_list: list[Union[Host, None]] = []
     host_list = group.get_hosts()
     return host_list
 
 
-def get_all_groups(target_project: str) -> dict[str, Group]:
-    """Get all groups in the inventory."""
+def get_all_groups(project_name: str) -> dict[str, Group]:
+    """
+    Get all groups in a project's inventory.
+
+    Args:
+        project_name (str): Project name.
+
+    Returns:
+        dict[str, Group]: Dictionary of groups.
+    """
     data_loader = DataLoader()
     inventory = InventoryManager(
         loader=data_loader,
-        sources=[
-            str(Path(config.PROJECTS_DIR) / target_project / "inventory")
-        ],
+        sources=[str(Path(config.PROJECTS_DIR) / project_name / "inventory")],
     )
     groups: dict[str, Group] = inventory.groups
     return groups
 
 
-def display_all_project_groups(target_project: str) -> None:
-    """Display all groups in a project inventory."""
-    groups = get_all_groups(target_project)
-    click.echo(f"Project '{target_project}' contains the following groups:")
+def display_all_project_groups(project_name: str) -> None:
+    """
+    Display all groups in a project's inventory.
+
+    Args:
+        target_project (str): Project name.
+    """
+    groups = get_all_groups(project_name)
+    click.echo(f"Project '{project_name}' contains the following groups:")
     for group in groups:
         click.echo(f"- {group}")
 
@@ -105,7 +162,17 @@ def validate_inventory_dir(
     param: click.Parameter,  # pylint: disable=unused-argument
     project_name: str,
 ) -> str:
-    """Check if the inventory directory exists."""
+    """
+    Validate that a project's inventory directory exists.
+
+    Args:
+        ctx (click.Context): Click context. Do not use.
+        param (click.Parameter): Click parameter. Do not use.
+        project_name (str): Project name.
+
+    Returns:
+        str: Project name.
+    """
     if not (Path(config.PROJECTS_DIR) / project_name / "inventory").is_dir():
         click.echo(
             f"Inventory directory does not exist for Project: {project_name}"
@@ -117,7 +184,17 @@ def validate_inventory_dir(
 def check_host_resolution(
     host: str, dns_servers: List[str], timeout: int
 ) -> List[str]:
-    """Check if a host is resolvable by a list of DNS servers."""
+    """
+    Check if a host can be resolved by a list of DNS servers.
+
+    Args:
+        host (str): Host name.
+        dns_servers (List[str]): List of DNS servers.
+        timeout (int): Timeout in seconds.
+
+    Returns:
+        List[str]: List of DNS servers that could not resolve the host.
+    """
     missing_servers = []
     for server in dns_servers:
         try:
@@ -143,7 +220,19 @@ def check_project_resolution(  # pylint: disable=too-many-locals
     timeout: int = 5,
     output: Optional[str] = None,
 ) -> Optional[list[dict[str, str]]]:
-    """Check Ansible inventory hosts of a project for DNS resolution."""
+    """
+    Check if all hosts in a project can be resolved by a list of DNS servers.
+
+    Args:
+        dns_servers (Optional[list[str]], optional): List of DNS servers.
+            Defaults to None.
+        timeout (int, optional): Timeout in seconds. Defaults to 5.
+        output (Optional[str], optional): Output format. Defaults to None.
+
+    Returns:
+        Optional[list[dict[str, str]]]: List of hosts that could not be
+            resolved.
+    """
     if not dns_servers:
         dns_servers = config.DNS_SERVERS.split(",")
     else:
@@ -155,7 +244,7 @@ def check_project_resolution(  # pylint: disable=too-many-locals
     for host in hosts:
         hostname = host.get_name()
         if not hostname:
-            logger.warning("Host '%s' has no name", host)
+            logger.error("Host '%s' has no name", host)
             continue
         try:
             missing_servers = check_host_resolution(
@@ -176,7 +265,9 @@ def check_project_resolution(  # pylint: disable=too-many-locals
 
     if output:
         try:
-            with open(output, "w", newline="", encoding="utf-8") as csv_file:
+            with open(
+                output, "w", newline="", encoding=config.ENCODING
+            ) as csv_file:
                 writer = csv.writer(csv_file)
                 writer.writerow(["Hostname", "Unresolvable from"])
                 writer.writerows(results)
@@ -194,7 +285,7 @@ def check_project_resolution(  # pylint: disable=too-many-locals
             unresolvable_hosts.append(
                 {"Hostname": host, "Unresolvable from": missing_servers}
             )
-            logger.warning(
+            logger.error(
                 "Host '%s' is not resolvable by DNS servers: %s",
                 host,
                 missing_servers,

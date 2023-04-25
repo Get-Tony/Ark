@@ -8,12 +8,11 @@ from typing import Any, Optional
 import click
 from tabulate import tabulate
 
-from ark import utils
 from ark.core import facts
 from ark.models.facts import AnsibleHostFacts
 from ark.settings import config
 
-from .cli_utils import log_command_call
+from .cli_utils import echo_or_page, log_command_call
 
 logger = logging.getLogger(__name__)
 
@@ -32,7 +31,12 @@ def facts_group() -> None:
 )
 @log_command_call()
 def collect_facts(project_name: Optional[str]) -> None:
-    """Collect facts from the specified directory."""
+    """
+    Collect Ansible facts for all hosts in a project.
+
+    Args:
+        project_name (Optional[str]): Project name.
+    """
     if not project_name:
         project_name = config.PROJECTS_DIR
     else:
@@ -69,7 +73,15 @@ def query_host_facts(
     fuzzy: Optional[bool],
     page: Optional[bool],
 ) -> None:
-    """Query facts for a specific host."""
+    """
+    Query facts for a given host.
+
+    Args:
+        fqdn (str): Fully qualified domain name.
+        fact_key (Optional[str]): Fact key.
+        fuzzy (Optional[bool]): Fuzzy match the fact key.
+        page (Optional[bool]): Page the output.
+    """
     current_facts = list(facts.query_host_facts(fqdn, fact_key, fuzzy))
     if len(current_facts) == 0:
         click.echo(f"No facts found for {fqdn}.")
@@ -85,7 +97,7 @@ def query_host_facts(
         "Echoing" if not page else "Paging",
         fqdn,
     )
-    utils.echo_or_page(output, page=page)
+    echo_or_page(output, page=page)
 
 
 @facts_group.command("find")
@@ -97,7 +109,15 @@ def query_host_facts(
 def find_hosts_by_fact(
     fact_key: str, fact_value: str, fuzzy: Optional[bool], page: Optional[bool]
 ) -> None:
-    """Find all hosts with a given key, value pair."""
+    """
+    Find hosts by a given fact key and value.
+
+    Args:
+        fact_key (str): Fact key.
+        fact_value (str): Fact value.
+        fuzzy (Optional[bool]): Fuzzy match the fact key.
+        page (Optional[bool]): Page the output.
+    """
     hosts: list[tuple[str, dict[str, Any]]] = list(
         facts.query_hosts_by_fact(fact_key, fact_value, fuzzy or False)
     )
@@ -125,14 +145,19 @@ def find_hosts_by_fact(
         f"Hosts with key '{fact_key}' containing value "
         f"'{fact_value}':\n{table}"
     )
-    utils.echo_or_page(output, page)
+    echo_or_page(output, page)
 
 
 @facts_group.command("remove")
 @click.argument("ansible_fqdn")
 @log_command_call()
 def remove_host_from_db(fqdn: str) -> None:
-    """Remove a host entry from the database."""
+    """
+    Remove a host from the database.
+
+    Args:
+        fqdn (str): Fully qualified domain name.
+    """
     success = facts.remove_host(fqdn)
 
     if success:
@@ -145,7 +170,12 @@ def remove_host_from_db(fqdn: str) -> None:
 @click.option("--page", is_flag=True, help="Page the output.")
 @log_command_call()
 def show_known_hosts(page: Optional[bool]) -> None:
-    """List all hosts in the database."""
+    """
+    Show all known hosts.
+
+    Args:
+        page (Optional[bool]): Page the output.
+    """
     hosts: list[AnsibleHostFacts] = facts.get_all_hosts()
     if len(hosts) == 0:
         click.echo(f"No hosts found with session: {config.DB_URL}")
@@ -186,7 +216,7 @@ def show_known_hosts(page: Optional[bool]) -> None:
         maxcolwidths=[5, 40, 40, 20, 20, 20, 40, 20, 20],
     )
     output = f"Known Hosts:\n{table}"
-    utils.echo_or_page(output, page)
+    echo_or_page(output, page)
 
     logger.info("Found '%s' hosts in the database.", len(hosts))
     logger.debug("Hosts: %s", [host.fqdn for host in hosts])

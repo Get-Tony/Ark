@@ -1,15 +1,14 @@
-"""Ark - Project Commands."""
+"""Ark - Playbook Execution Commands."""
 
 import logging
 from pathlib import Path
 
 import click
 
-from ark import utils
-from ark.core import runner
+from ark.core import run
 from ark.settings import config
 
-from .cli_utils import log_command_call
+from .cli_utils import log_command_call, project_name_validation_callback
 
 logger = logging.getLogger(__name__)
 
@@ -18,7 +17,7 @@ logger = logging.getLogger(__name__)
 @click.argument(
     "project_name",
     type=click.Path(exists=False),
-    callback=utils.project_name_validation_callback,
+    callback=project_name_validation_callback,
 )
 @click.argument("playbook_file", type=click.Path(exists=False), required=False)
 @click.option(
@@ -55,30 +54,39 @@ def run_command(  # pylint: disable=too-many-arguments
     extra_vars: str,
     verbosity: int,
 ) -> None:
-    """Run a Project playbook."""
+    """
+    Run an Ansible playbook.
+
+    Args:
+        playbook_file (str): Playbook file.
+        rotate_artifacts (int): Number of artifacts to keep.
+        limit (str): Limit the playbook execution to a specific group or host.
+        extra_vars (str): Pass additional variables as key-value pairs.
+        verbosity (int): Increase the verbosity of the output.
+    """
     if not playbook_file:
         click.echo("Please specify a playbook to run.")
         click.echo(f"Available playbooks for the '{project_name}' project:")
-        for playbook in utils.find_playbooks(
+        for playbook in run.find_playbooks(
             str(Path(config.PROJECTS_DIR) / project_name)
         ):
             click.echo(f" - {playbook}")
         return
 
-    playbook_path = utils.get_playbook_path(project_name, playbook_file)
+    playbook_path = run.get_playbook_path(project_name, playbook_file)
     if not playbook_path:
         click.echo(
             f"Playbook '{playbook_file}' not found in project '{project_name}'"
         )
         click.echo("Available playbooks:")
-        for playbook in utils.find_playbooks(
+        for playbook in run.find_playbooks(
             str(Path(config.PROJECTS_DIR) / project_name)
         ):
             click.echo(f" - {playbook}")
         return
-    extra_vars_dict = runner.prepare_extra_vars(extra_vars)
+    extra_vars_dict = run.prepare_extra_vars(extra_vars)
     click.echo(f"Running playbook: {playbook_path}")
-    play_results = runner.run_ansible_playbook(
+    play_results = run.run_ansible_playbook(
         project_name=project_name,
         playbook_path=playbook_path,
         rotate_artifacts=rotate_artifacts,

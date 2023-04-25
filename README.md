@@ -6,6 +6,7 @@ Ark is an intuitive command-line tool designed to simplify the management of mul
 
 - [Ark: Streamline Your Ansible Workflow](#ark-streamline-your-ansible-workflow)
   - [Table of Contents](#table-of-contents)
+  - [⚠️ Important Notice ⚠️](#️-important-notice-️)
   - [Requirements](#requirements)
   - [Build and Installation](#build-and-installation)
     - [Build with Poetry](#build-with-poetry)
@@ -24,6 +25,16 @@ Ark is an intuitive command-line tool designed to simplify the management of mul
   - [Code of Conduct](#code-of-conduct)
   - [Contributing](#contributing)
   - [Security Policy](#security-policy)
+
+## ⚠️ Important Notice ⚠️
+
+Due to recent significant changes, the README below is currently not accurate.  I apologize for any inconvenience and appreciate your understanding.
+
+Documentation within the source code by means of `DocStrings` and `Comments` have already been updated and should be correct.
+
+The updated README **should be available by 26/04/2023**.
+
+---
 
 ## Requirements
 

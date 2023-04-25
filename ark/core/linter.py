@@ -6,14 +6,20 @@ import subprocess
 from pathlib import Path
 from typing import Optional
 
-from ark import utils
+from ark.core.run import get_playbook_path
 from ark.settings import config
 
 logger = logging.getLogger(__name__)
 
 
 def ansible_lint_accessible() -> bool:
-    """Check if ansible-lint is installed."""
+    """
+    Check if ansible-lint is installed and accessible.
+
+    Returns:
+        bool: True if ansible-lint is installed and accessible,
+            otherwise False.
+    """
     try:
         lint_version = subprocess.check_output(
             ["ansible-lint", "--version", "--nocolor"],
@@ -29,9 +35,19 @@ def ansible_lint_accessible() -> bool:
 def lint_playbook_or_project(
     project_name: str, playbook_file: Optional[str], verbosity: int = 0
 ) -> Optional[str]:
-    """Lint a playbook or project using ansible-lint."""
+    """
+    Lint a playbook or project.
+
+    Args:
+        project_name (str): Project name.
+        playbook_file (Optional[str]): Playbook filename.
+        verbosity (int, optional): Verbosity level. Defaults to 0.
+
+    Returns:
+        Optional[str]: Linting output or None if the linting process fails.
+    """
     if playbook_file:
-        lint_target = utils.get_playbook_path(project_name, playbook_file)
+        lint_target = get_playbook_path(project_name, playbook_file)
     else:
         lint_target = Path(config.PROJECTS_DIR) / project_name
     if not lint_target:
