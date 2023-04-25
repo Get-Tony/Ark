@@ -1,5 +1,5 @@
 """Ark - Command Line Interface Module."""
-__author__ = "Anthony Pagan <Get-Tony@outlook.com>"
+__author__ = "Anthony Pagan <get-tony@outlook.com>"
 
 from .cron import cron_group
 from .facts import facts_group

@@ -1,5 +1,5 @@
 # Tool configured is located in the pyproject.toml file.
-# Author: Anthony Pagan <Get-Tony@outlook.com>
+# Author: Anthony Pagan <get-tony@outlook.com>
 # Usage: make [target]
 
 EXCLUDED_DIRS := -path "./temp__src" -o -path "./venv" -o -path "./env" -o -path "./.venv" -o -path "./.env" -path "./.git" -o -path "./.mypy_cache" -o -path "./.pytest_cache" -o -path "./.coverage" -o -path "./.ruff_cache"

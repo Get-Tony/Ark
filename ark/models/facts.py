@@ -1,5 +1,5 @@
 """Ark - Ansible Host Facts."""
-__author__ = "Anthony Pagan <Get-Tony@outlook.com>"
+__author__ = "Anthony Pagan <get-tony@outlook.com>"
 
 import json
 from datetime import datetime

@@ -2,7 +2,7 @@
 name = "ark"
 version = "0.3.0"
 description = "A command-line tool for managing Ansible Runner Projects."
-authors = ["Get-Tony <Get-Tony@outlook.com>"]
+authors = ["Anthony Pagan <get-tony@outlook.com>"]
 readme = "README.md"
 homepage = "https://github.com/Get-Tony/Ark"
 license = "MIT"
