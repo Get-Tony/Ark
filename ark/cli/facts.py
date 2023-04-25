@@ -150,7 +150,7 @@ def find_hosts_by_fact(
 
 
 @facts_group.command("remove")
-@click.argument("ansible_fqdn")
+@click.argument("fqdn")
 @log_command_call()
 def remove_host_from_db(fqdn: str) -> None:
     """
