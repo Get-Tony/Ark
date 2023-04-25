@@ -69,13 +69,25 @@ The wheel file will be located in the `dist` directory. See the [Installing from
 
 ### Installing from Wheel
 
-1. Install the wheel file:
+ 1. Install the wheel file:
 
-        pip install --user ark-<version_number>-py3-none-any.whl
+        python3 -m pip install --user ark-<version_number>-py3-none-any.whl
 
-2. Check that Ark is installed:
+ 2. Ensure the `~/.local/bin` directory is in your `$PATH` to access Ark. If it is not already added, you can do so by adding the following line to your `.bashrc` file:
 
-        ark --help
+            export PATH="$HOME/.local/bin:$PATH"
+
+      To add this line to your `.bashrc` file, you can run the following command:
+
+            echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
+
+      After adding the line, you need to reload your `.bashrc` file to apply the changes:
+
+            source ~/.bashrc
+
+ 3. Verify the installation:
+
+            ark --help
 
 ## Usage
 
@@ -184,13 +196,11 @@ Here are the environment variables you can set to configure Ark:
 
 To create a `.env` file in the project's directory, you can use a text editor and add the environment variables like this:
 
-```ini
-ARK_PROJECTS_DIR=/path/to/projects
-ARK_CONSOLE_LOG_LEVEL=WARNING
-ARK_FILE_LOG_LEVEL=INFO
-ARK_ENCODING=utf-8
-ARK_DNS_SERVERS=1.1.1.1,8.8.8.8
-```
+    ARK_PROJECTS_DIR=/path/to/projects
+    ARK_CONSOLE_LOG_LEVEL=WARNING
+    ARK_FILE_LOG_LEVEL=INFO
+    ARK_ENCODING=utf-8
+    ARK_DNS_SERVERS=1.1.1.1,8.8.8.8
 
 Save the file as .env in the project's directory. The environment variables will be automatically loaded when running Ark. To override any of these settings, simply set an environment variable with the same name outside of the dotenv file.
 
@@ -214,10 +224,8 @@ To customize the logging behavior, you can modify the following environment vari
 
 Example of a `.env` file with custom logging settings:
 
-```ini
-ARK_CONSOLE_LOG_LEVEL=WARNING
-ARK_FILE_LOG_LEVEL=DEBUG
-```
+    ARK_CONSOLE_LOG_LEVEL=WARNING
+    ARK_FILE_LOG_LEVEL=DEBUG
 
 With these settings, Ark will output "INFO" level logs to the console and "DEBUG" level logs to the log file. If you want to disable file logging, simply don't set a `log_dir` value when calling the `init_logging` function or remove the `ARK_FILE_LOG_LEVEL` variable from your environment.
 
