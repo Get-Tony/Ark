@@ -24,7 +24,7 @@ sphinx = "^6.2.0"
 sphinx-rtd-theme = "^1.2.0"
 
 [tool.poetry.extras]
-docs =["Sphinx", "sphinx-rtd-theme", "sphinxcontrib-napoleon"]
+docs =["sphinx", "sphinx-rtd-theme", "sphinxcontrib-napoleon"]
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^6.2.5"
