@@ -10,9 +10,6 @@ Ark is an intuitive command-line tool designed to simplify the management of mul
   - [Build and Installation](#build-and-installation)
     - [Build with Poetry](#build-with-poetry)
     - [Installing from Wheel](#installing-from-wheel)
-  - [Makefile (Development)](#makefile-development)
-    - [Available Commands](#available-commands)
-    - [Usage Examples](#usage-examples)
   - [Usage](#usage)
     - [Run](#run)
     - [Report](#report)
@@ -23,12 +20,15 @@ Ark is an intuitive command-line tool designed to simplify the management of mul
   - [Settings](#settings)
   - [Database](#database)
   - [Logging](#logging)
-  - [Disclaimer](#disclaimer)
-  - [Issues](#issues)
-  - [License](#license)
+  - [Makefile (Development)](#makefile-development)
+    - [Available Commands](#available-commands)
+    - [Usage Examples](#usage-examples)
   - [Code of Conduct](#code-of-conduct)
   - [Contributing](#contributing)
   - [Security Policy](#security-policy)
+  - [License](#license)
+  - [Disclaimer](#disclaimer)
+  - [Issues](#issues)
 
 ## Requirements
 
@@ -91,57 +91,6 @@ The wheel file will be located in the `dist` directory. See the [Installing from
  3. Verify the installation:
 
             ark --help
-
-## Makefile (Development)
-
-This section outlines the usage of the Makefile, which helps automate various tasks for building, linting, and managing Ark source code.
-
-- **GNU Make** is used to process `Makefile`'s and is available on most Unix-based systems, such as Linux and macOS.
-
-### Available Commands
-
-- `help`: Display a list of available commands and their descriptions.
-- `lint-python`: Run Python linters: black, ruff, mypy, and pylint.
-- `lint-ansible`: Run Ansible lint on all YAML files.
-- `clean`: Remove cache objects, such as .mypy_cache, .pytest_cache, .coverage, and .ruff_cache.
-- `check-version`: Check if the version defined in pyproject.toml and ark/init.py is consistent.
-- `set-version` VERSION=<new_version>: Set the Ark version in both pyproject.toml and ark/init.py.
-- `build`: Build Ark, running linters, checking version, and building with Poetry.
-- `install`: Install Ark in development mode using Poetry.
-
-### Usage Examples
-
-- Display the list of available commands:
-
-      make help
-
-- Run Python linters:
-
-      make lint-python
-
-- Run Ansible lint on all YAML files:
-
-      make lint-ansible
-
-- Remove cache objects:
-
-      make clean
-
-- Check Ark version consistency:
-
-      make check-version
-
-- Set a new version for Ark:
-
-      make set-version VERSION=1.0.0
-
-- Build Ark:
-
-      make build
-
-- Install Ark in development mode:
-
-      make install
 
 ## Usage
 
@@ -283,19 +232,56 @@ Example of a `.env` file with custom logging settings:
 
 With these settings, Ark will output "INFO" level logs to the console and "DEBUG" level logs to the log file. If you want to disable file logging, simply don't set a `log_dir` value when calling the `init_logging` function or remove the `ARK_FILE_LOG_LEVEL` variable from your environment.
 
-## Disclaimer
+## Makefile (Development)
 
-- **Use at your own risk!** I am not responsible for any data loss or other issues that may occur.
-- Ark is still in **Alpha** and will likely have bugs and other issues. Please [report](#issues) any issues you encounter.
-- Ark is **Not Supported by or Affiliated** with [Ansible](https://github.com/ansible/ansible) or [Ansible Runner](https://github.com/ansible/ansible-runner).
+This section outlines the usage of the Makefile, which helps automate various tasks for building, linting, and managing Ark source code.
 
-## Issues
+- **GNU Make** is used to process `Makefile`'s and is available on most Unix-based systems, such as Linux and macOS.
 
-If you encounter any issues, please [Report Issues](https://github.com/Get-Tony/ark/issues) on GitHub.
+### Available Commands
 
-## [License](./LICENSE)
+- `help`: Display a list of available commands and their descriptions.
+- `lint-python`: Run Python linters: black, ruff, mypy, and pylint.
+- `lint-ansible`: Run Ansible lint on all YAML files.
+- `clean`: Remove cache objects, such as .mypy_cache, .pytest_cache, .coverage, and .ruff_cache.
+- `check-version`: Check if the version defined in pyproject.toml and ark/init.py is consistent.
+- `set-version` VERSION=<new_version>: Set the Ark version in both pyproject.toml and ark/init.py.
+- `build`: Build Ark, running linters, checking version, and building with Poetry.
+- `install`: Install Ark in development mode using Poetry.
 
-Ark is released under the [GPLv3 License](./LICENSE).
+### Usage Examples
+
+- Display the list of available commands:
+
+      make help
+
+- Run Python linters:
+
+      make lint-python
+
+- Run Ansible lint on all YAML files:
+
+      make lint-ansible
+
+- Remove cache objects:
+
+      make clean
+
+- Check Ark version consistency:
+
+      make check-version
+
+- Set a new version for Ark:
+
+      make set-version VERSION=1.0.0
+
+- Build Ark:
+
+      make build
+
+- Install Ark in development mode:
+
+      make install
 
 ## [Code of Conduct](./CODE_OF_CONDUCT.md)
 
@@ -308,6 +294,20 @@ If you would like to contribute to this project, please read the [Contributing](
 ## [Security Policy](./SECURITY.md)
 
 For information on reporting vulnerabilities, please read the [Security Policy](./SECURITY.md).
+
+## [License](./LICENSE)
+
+Ark is released under the [GPLv3 License](./LICENSE).
+
+## Disclaimer
+
+- **Use at your own risk!** I am not responsible for any data loss or other issues that may occur.
+- Ark is still in **Alpha** and will likely have bugs and other issues. Please [report](#issues) any issues you encounter.
+- Ark is **Not Supported by or Affiliated** with [Ansible](https://github.com/ansible/ansible) or [Ansible Runner](https://github.com/ansible/ansible-runner).
+
+## Issues
+
+If you encounter any issues, please [Report Issues](https://github.com/Get-Tony/ark/issues) on GitHub.
 
 ---
 [Back to top](#ark-streamline-your-ansible-workflow)
