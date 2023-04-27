@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "ark"
-version = "0.3.2"
+version = "0.3.3"
 description = "A command-line tool for managing Ansible Runner Projects."
 authors = ["Anthony Pagan <get-tony@outlook.com>"]
 readme = "README.md"
@@ -22,6 +22,7 @@ python-crontab = "^2.7.1"
 ansible = "^7.4.0"
 sphinx = "^6.2.0"
 sphinx-rtd-theme = "^1.2.0"
+sphinxcontrib-napoleon = "^0.7"
 
 [tool.poetry.extras]
 docs =["sphinx", "sphinx-rtd-theme", "sphinxcontrib-napoleon"]
