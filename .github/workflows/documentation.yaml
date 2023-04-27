@@ -16,9 +16,8 @@ jobs:
           mkdir gh-pages
           touch gh-pages/.nojekyll
           cd docs/
-          poetry run sphinx-build -b html source _build
+          make html
           cp -r _build/* ../gh-pages/
-          cd ..
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}

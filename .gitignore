@@ -43,5 +43,7 @@
 **/*.db
 
 # Build ans dist directories
-**/*build
-**/*dist
+**/dist
+
+# Docs build directory
+**/docs/_build
