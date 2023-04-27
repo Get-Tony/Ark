@@ -20,6 +20,9 @@ Ark is an intuitive command-line tool designed to simplify the management of mul
   - [Settings](#settings)
   - [Database](#database)
   - [Logging](#logging)
+  - [Makefile Usage](#makefile-usage)
+    - [Available Commands](#available-commands)
+    - [Usage Examples](#usage-examples)
   - [Disclaimer](#disclaimer)
   - [Issues](#issues)
   - [License](#license)
@@ -229,6 +232,55 @@ Example of a `.env` file with custom logging settings:
 
 With these settings, Ark will output "INFO" level logs to the console and "DEBUG" level logs to the log file. If you want to disable file logging, simply don't set a `log_dir` value when calling the `init_logging` function or remove the `ARK_FILE_LOG_LEVEL` variable from your environment.
 
+## Makefile Usage
+
+This section outlines the usage of the Makefile, which helps automate various tasks for building, linting, and managing Ark source code.
+
+### Available Commands
+
+    make help: Display a list of available commands and their descriptions.
+    make lint-python: Run Python linters: black, ruff, mypy, and pylint.
+    make lint-ansible: Run Ansible lint on all YAML files.
+    make clean: Remove cache objects, such as .mypy_cache, .pytest_cache, .coverage, and .ruff_cache.
+    make check-version: Check if the version defined in pyproject.toml and ark/init.py is consistent.
+    make set-version VERSION=<new_version>: Set the Ark version in both pyproject.toml and ark/init.py.
+    make build: Build Ark, running linters, checking version, and building with Poetry.
+    make install: Install Ark in development mode using Poetry.
+
+### Usage Examples
+
+- Display the list of available commands:
+
+      make help
+
+- Run Python linters:
+
+      make lint-python
+
+- Run Ansible lint on all YAML files:
+
+      make lint-ansible
+
+- Remove cache objects:
+
+      make clean
+
+- Check Ark version consistency:
+
+      make check-version
+
+- Set a new version for Ark:
+
+      make set-version VERSION=1.0.0
+
+- Build Ark:
+
+      make build
+
+- Install Ark in development mode:
+
+      smake install
+
 ## Disclaimer
 
 - **Use at your own risk!** I am not responsible for any data loss or other issues that may occur.
@@ -256,4 +308,4 @@ If you would like to contribute to this project, please read the [Contributing](
 For information on reporting vulnerabilities, please read the [Security Policy](./SECURITY.md).
 
 ---
-[Back to Table of Contents](#table-of-contents)
+[Back to top](#ark-streamline-your-ansible-workflow)
