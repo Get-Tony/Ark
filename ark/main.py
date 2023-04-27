@@ -4,24 +4,9 @@ __author__ = "Anthony Pagan <get-tony@outlook.com>"
 import logging
 from pathlib import Path
 
-import click
-
-from ark.cli import (
-    cron_group,
-    facts_group,
-    inventory_group,
-    lint_command,
-    report_command,
-    run_command,
-)
+from ark.cli import ark_cli
 from ark.logger_config import init_logging
 from ark.settings import config
-
-
-@click.group()
-@click.version_option()
-def ark_cli() -> None:
-    """Ark - Streamline Your Ansible Workflow."""
 
 
 def main() -> None:
@@ -44,15 +29,7 @@ def main() -> None:
         logger.warning("Debug mode enabled.")
         logger.warning("Ark settings: '%s'", config.json(indent=4))
 
-    # Add subcommands
-    ark_cli.add_command(run_command)
-    ark_cli.add_command(lint_command)
-    ark_cli.add_command(report_command)
-    ark_cli.add_command(facts_group)
-    ark_cli.add_command(inventory_group)
-    ark_cli.add_command(cron_group)
-
-    # Run the CLI
+    # Start CLI
     ark_cli()
 
 

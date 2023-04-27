@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "ark"
-version = "0.3.3"
+version = "0.3.4"
 description = "A command-line tool for managing Ansible Runner Projects."
 authors = ["Anthony Pagan <get-tony@outlook.com>"]
 readme = "README.md"

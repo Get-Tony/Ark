@@ -11,7 +11,7 @@ from tabulate import tabulate
 from ark.core import inventory
 from ark.settings import config
 
-from .utilities import log_command_call
+from .utilities import log_command_call, validate_inventory_dir
 
 logger = logging.getLogger(__name__)
 
@@ -22,7 +22,7 @@ def inventory_group() -> None:
 
 
 @inventory_group.command("host-groups")
-@click.argument("project-name", callback=inventory.validate_inventory_dir)
+@click.argument("project-name", callback=validate_inventory_dir)
 @click.argument("inventory-name")
 @log_command_call()
 def get_host_groups(project_name: str, inventory_name: str) -> None:
@@ -41,12 +41,14 @@ def get_host_groups(project_name: str, inventory_name: str) -> None:
         return
 
     groups = inventory.get_groups_for_host(host)
-    inventory.display_groups(inventory_name, groups)
+    click.echo(f"Host '{inventory_name}' is a member of the following groups:")
+    for group in groups:
+        click.echo(f"- {group}")
     logger.debug("Groups: %s", groups)
 
 
 @inventory_group.command("list-hosts")
-@click.argument("project_name", callback=inventory.validate_inventory_dir)
+@click.argument("project_name", callback=validate_inventory_dir)
 @click.argument("group_name", required=False, default=None)
 @log_command_call()
 def get_group_members(project_name: str, group_name: str) -> None:
@@ -83,7 +85,7 @@ def get_group_members(project_name: str, group_name: str) -> None:
 @inventory_group.command("check-dns")
 @click.argument(
     "project_name",
-    callback=inventory.validate_inventory_dir,
+    callback=validate_inventory_dir,
     required=True,
 )
 @click.option("--dns-server", multiple=True, required=False, default=None)

@@ -192,3 +192,27 @@ def project_name_validation_callback(
         ctx.abort()
     logger.debug("Project validation complete.")
     return project_name
+
+
+def validate_inventory_dir(
+    ctx: click.Context,
+    param: click.Parameter,  # pylint: disable=unused-argument
+    project_name: str,
+) -> str:
+    """
+    Validate that a project's inventory directory exists.
+
+    Args:
+        ctx (click.Context): Click context. Do not use.
+        param (click.Parameter): Click parameter. Do not use.
+        project_name (str): Project name.
+
+    Returns:
+        str: Project name.
+    """
+    if not (Path(config.PROJECTS_DIR) / project_name / "inventory").is_dir():
+        click.echo(
+            f"Inventory directory does not exist for Project: {project_name}"
+        )
+        ctx.exit(1)
+    return project_name

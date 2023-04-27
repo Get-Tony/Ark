@@ -7,7 +7,6 @@ import subprocess
 from pathlib import Path
 from typing import Any, List, Optional, Union
 
-import click
 from ansible.inventory.group import Group
 from ansible.inventory.host import Host
 from ansible.inventory.manager import InventoryManager
@@ -79,19 +78,6 @@ def get_groups_for_host(host: Host) -> list[str]:
     return groups
 
 
-def display_groups(host_name: str, groups: list[str]) -> None:
-    """
-    Display all groups a host is a member of.
-
-    Args:
-        host_name (str): Host name.
-        groups (list[str]): List of groups.
-    """
-    click.echo(f"Host '{host_name}' is a member of the following groups:")
-    for group in groups:
-        click.echo(f"- {group}")
-
-
 def get_group(project_name: str, group_name: str) -> Union[Group, None]:
     """
     Get a group from a project.
@@ -143,43 +129,6 @@ def get_all_groups(project_name: str) -> dict[str, Group]:
     )
     groups: dict[str, Group] = inventory.groups
     return groups
-
-
-def display_all_project_groups(project_name: str) -> None:
-    """
-    Display all groups in a project's inventory.
-
-    Args:
-        target_project (str): Project name.
-    """
-    groups = get_all_groups(project_name)
-    click.echo(f"Project '{project_name}' contains the following groups:")
-    for group in groups:
-        click.echo(f"- {group}")
-
-
-def validate_inventory_dir(
-    ctx: click.Context,
-    param: click.Parameter,  # pylint: disable=unused-argument
-    project_name: str,
-) -> str:
-    """
-    Validate that a project's inventory directory exists.
-
-    Args:
-        ctx (click.Context): Click context. Do not use.
-        param (click.Parameter): Click parameter. Do not use.
-        project_name (str): Project name.
-
-    Returns:
-        str: Project name.
-    """
-    if not (Path(config.PROJECTS_DIR) / project_name / "inventory").is_dir():
-        click.echo(
-            f"Inventory directory does not exist for Project: {project_name}"
-        )
-        ctx.exit(1)
-    return project_name
 
 
 def check_host_resolution(
