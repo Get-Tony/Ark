@@ -74,7 +74,7 @@ More table formats can be found in the [tabulate](https://pypi.org/project/tabul
 ### Database
 
 Ark uses [SQLAlchemy](https://www.sqlalchemy.org/) and [SQLModel](https://sqlmodel.tiangolo.com/) for ORM and session management.
-The database is located in the `PROJECTS_DIR` by default. You can configure the database URL using the `ARK_DB_URL` environment variable. See the [Settings](#settings) section for more information.
+The database is located in the `ARK_PROJECTS_DIR` by default. You can configure the database URL using the `ARK_DB_URL` environment variable. See the [Settings](#settings) section for more information.
 
 ### Logging
 
