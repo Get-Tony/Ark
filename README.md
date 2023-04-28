@@ -37,7 +37,7 @@ See the [pyproject.toml](./pyproject.toml) file for the full list of requirement
 
 ### Commands
 
-See the [Ark Documentation](https://get-tony.github.io/Ark/) for detailed information.
+See the [Ark Documentation](#documentation) for detailed information.
 
 - `run`: Run Ansible playbooks.
 - `report`: Generate reports based on Ansible Runner data.
