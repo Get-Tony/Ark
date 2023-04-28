@@ -10,8 +10,6 @@ jobs:
       - uses: actions/setup-python@v3
       - name: Install dependencies
         run: |
-          apt-get update
-          apt-get install -y python3-pip python3-venv make
           pip install poetry sphinx sphinx_rtd_theme sphinxcontrib-napoleon
       - name: Sphinx build
         run: |
