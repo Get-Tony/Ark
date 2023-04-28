@@ -26,8 +26,7 @@ def main() -> None:
             == logging.DEBUG,
         ]
     ):
-        logger.warning("Debug mode enabled.")
-        logger.warning("Ark settings: '%s'", config.json(indent=4))
+        logger.debug("Ark settings: '%s'", config.json(indent=4))
 
     # Start CLI
     ark_cli()

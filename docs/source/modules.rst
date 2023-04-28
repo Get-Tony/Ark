@@ -1,8 +1,10 @@
-Ark Package Documentation
-=========================
+Go to the `Ark GitHub page <https://github.com/get-tony/Ark>`_.
+
+Modules
+===========
 
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 2
 
    ark.core.cron
    ark.core.facts

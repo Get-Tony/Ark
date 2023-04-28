@@ -4,7 +4,7 @@ __author__ = "Anthony Pagan <get-tony@outlook.com>"
 import json
 import logging
 from pathlib import Path
-from typing import Any, Dict, Generator, Optional, Tuple
+from typing import Any, Dict, Generator, Optional, Tuple, Union
 
 from sqlalchemy.exc import IntegrityError
 from sqlmodel import Session
@@ -20,12 +20,12 @@ logger = logging.getLogger(__name__)
 init_db()
 
 
-def find_caches(target_dir: Optional[str] = None) -> list[Path]:
+def find_caches(target_dir: Optional[Union[str, Path]] = None) -> list[Path]:
     """
     Find all fact cache directories.
 
     Args:
-        target_dir (Optional[str], optional): Target directory.
+        target_dir (Optional[Union[str, Path]], optional): Target directory.
             Defaults to None.
 
     Returns:
@@ -173,6 +173,39 @@ def store_facts(
     else:
         logger.info("No facts were updated.")
     return updated_hosts
+
+
+def recursive_import(target_dir: Union[str, Path]) -> Union[list[str], None]:
+    """
+    Recursively import facts from a directory.
+
+    Args:
+        target_dir (Union[str, Path]): Directory to import facts from.
+
+    Raises:
+        NotADirectoryError: Target directory is not a directory.
+
+    Returns:
+        Union[list[str], None]: List of updated hosts.
+    """
+    target_dir = Path(target_dir).resolve()
+    if not Path(target_dir).is_dir():
+        logger.error("'%s' is not a directory.", target_dir)
+        raise NotADirectoryError(f"'{target_dir}' is not a directory.")
+
+    fact_cache_paths: list[Path] = find_caches(target_dir=target_dir)
+    host_facts: dict[str, AnsibleHostFacts] = load_cache_dirs(
+        fact_cache_paths=fact_cache_paths
+    )
+    updated_hosts: list[str] = store_facts(host_facts)
+
+    if updated_hosts:
+        logger.info("Updated facts for hosts: '%s'", updated_hosts)
+        for hostname in updated_hosts:
+            logger.info("Updated facts for host: '%s'", hostname)
+        return updated_hosts
+    logger.info("No facts were updated.")
+    return None
 
 
 @get_session
@@ -338,7 +371,9 @@ def remove_host(fqdn: str, session: Optional[Session] = None) -> bool:
 
 
 @get_session
-def get_all_hosts(session: Optional[Session] = None) -> list[AnsibleHostFacts]:
+def get_all_db_hosts(
+    session: Optional[Session] = None,
+) -> list[AnsibleHostFacts]:
     """
     Get all hosts from the database.
 
