@@ -174,8 +174,6 @@ This will run the Python linters on the project
 
 ---
 
-[Back to top](#ark-streamline-your-ansible-workflow)
-
 ## Disclaimer
 
 - ***Use at your own risk!*** I am not responsible for any data loss or other damages that may occur from using Ark.
@@ -198,3 +196,7 @@ For information on reporting vulnerabilities, please read the [Security Policy](
 ## [License](./LICENSE)
 
 Ark is released under the [GPLv3 License](./LICENSE).
+
+---
+
+[Back to top](#ark-streamline-your-ansible-workflow)
