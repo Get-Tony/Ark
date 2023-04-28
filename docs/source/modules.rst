@@ -2,7 +2,7 @@ Ark Package Documentation
 =========================
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 4
 
    ark.core.cron
    ark.core.facts
