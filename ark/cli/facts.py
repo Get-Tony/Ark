@@ -13,7 +13,7 @@ from ark.core import facts
 from ark.models.facts import AnsibleHostFacts
 from ark.settings import config
 
-from .utilities import echo_or_page, log_command_call
+from .utilities import echo_or_page, log_command_call, validate_project_dir
 
 logger = logging.getLogger(__name__)
 
@@ -23,7 +23,7 @@ def facts_group() -> None:
     """Ansible Facts operations."""
 
 
-@facts_group.command("collect")
+@facts_group.command("import")
 @click.argument(
     "project-name",
     type=str,
@@ -31,35 +31,41 @@ def facts_group() -> None:
     required=False,
 )
 @log_command_call()
-def collect_facts(project_name: Optional[str]) -> None:
+def import_fact_caches(project_name: Optional[str]) -> None:
     """
-    Collect Ansible facts for all hosts in a project.
+    Collect Ansible facts for all hosts in a project. If no project is
+    specified, all projects will be imported.
 
     Args:
         project_name (Optional[str]): Project name.
     """
-    if not project_name:
-        project_name = config.PROJECTS_DIR
-    else:
-        project_path = Path(config.PROJECTS_DIR) / project_name
-        if not project_path.is_dir():
-            click.echo(
-                f"Project '{project_name}' not found in "
-                f"'{config.PROJECTS_DIR}'."
-            )
+    project_path = (
+        Path(config.PROJECTS_DIR) / project_name
+        if project_name
+        else Path(config.PROJECTS_DIR)
+    )
+    if not project_path.is_dir():
+        click.echo(f"'{project_path.stem}' is not a directory.")
+        return
+    if project_name:
+        missing_items = validate_project_dir(project_name)
+        if missing_items:
+            click.echo(f"Project '{project_name}' is missing required items: ")
+            for missing_type in missing_items:
+                for missing_item in missing_items[missing_type]:
+                    click.echo(f"  {missing_type[:-1]}: {missing_item}")
             return
-        project_name = str(project_path)
 
-    fact_cache_paths = facts.find_caches(target_dir=project_name)
-    host_facts = facts.load_cache_dirs(fact_cache_paths)
-    updated_hosts = facts.store_facts(host_facts)
+    updated_hosts = facts.recursive_import(project_path)
 
     if updated_hosts:
-        click.echo(f"Collected facts from {project_name}:")
+        click.echo(f"Collected facts from {project_name or project_path}:")
         for hostname in updated_hosts:
             click.echo(f"  {hostname}")
-    else:
-        click.echo(f"No new or modified facts found in {project_name}.")
+        return
+    click.echo(
+        f"No new or modified facts found in '{project_name or project_path}'."
+    )
 
 
 @facts_group.command("query")
@@ -177,7 +183,7 @@ def show_known_hosts(page: Optional[bool]) -> None:
     Args:
         page (Optional[bool]): Page the output.
     """
-    hosts: list[AnsibleHostFacts] = facts.get_all_hosts()
+    hosts: list[AnsibleHostFacts] = facts.get_all_db_hosts()
     if len(hosts) == 0:
         click.echo(f"No hosts found with session: {config.DB_URL}")
         logger.debug("Command finished: show_known_hosts")
