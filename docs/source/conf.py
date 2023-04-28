@@ -19,6 +19,3 @@ extensions = [
 napoleon_google_docstring = True
 napoleon_use_param = False
 napoleon_use_ivar = True
-
-
-html_theme = "sphinx_rtd_theme"
