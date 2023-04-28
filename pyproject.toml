@@ -21,11 +21,10 @@ types-tabulate = "^0.9.0.2"
 python-crontab = "^2.7.1"
 ansible = "^7.4.0"
 sphinx = "^6.2.0"
-sphinx-rtd-theme = "^1.2.0"
 sphinxcontrib-napoleon = "^0.7"
 
 [tool.poetry.extras]
-docs =["sphinx", "sphinx-rtd-theme", "sphinxcontrib-napoleon"]
+docs =["sphinx", "sphinxcontrib-napoleon"]
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^6.2.5"

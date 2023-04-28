@@ -6,6 +6,7 @@ Ark is an intuitive command-line tool designed to simplify the management of mul
 
 - [Ark: Streamline Your Ansible Workflow](#ark-streamline-your-ansible-workflow)
   - [Table of Contents](#table-of-contents)
+  - [Documentation](#documentation)
   - [Requirements](#requirements)
   - [Build and Installation](#build-and-installation)
     - [Build with Poetry](#build-with-poetry)
@@ -22,7 +23,6 @@ Ark is an intuitive command-line tool designed to simplify the management of mul
   - [Logging](#logging)
   - [Makefile (Development)](#makefile-development)
     - [Available Commands](#available-commands)
-    - [Usage Examples](#usage-examples)
   - [Code of Conduct](#code-of-conduct)
   - [Contributing](#contributing)
   - [Security Policy](#security-policy)
@@ -30,11 +30,15 @@ Ark is an intuitive command-line tool designed to simplify the management of mul
   - [Disclaimer](#disclaimer)
   - [Issues](#issues)
 
+## Documentation
+
+The Ark package documentation is available at <https://get-tony.github.io/Ark/>. It provides detailed information on the Ark package modules.
+
 ## Requirements
 
 See the [pyproject.toml](./pyproject.toml) file for the full list of requirements.
 
-- Python 3.9.2 or higher
+- Python 3.9 or higher
 
 ## Build and Installation
 
@@ -194,7 +198,7 @@ Here are the environment variables you can set to configure Ark:
 - `ARK_CONSOLE_LOG_LEVEL`: Set the console log level (default: "WARNING").
 - `ARK_FILE_LOG_LEVEL`: Set the file log level (default: "INFO").
 - `ARK_ENCODING`: Configure the encoding used by Ark (default: "utf-8").
-- `ARK_DNS_SERVERS`: Configure the DNS servers used in the `check-dns` command (default: "1.1.1.1,8.8.8.8").
+- `ARK_DNS_SERVERS`: Configure the DNS servers used in the `check-dns` command (default: "8.8.8.8" [Google Public DNS](https://developers.google.com/speed/public-dns/)).
 - `ARK_TABLE_FORMAT`: Set the table format for displaying output (default: "psql").
 
 To create a `.env` file in the project's directory, you can use a text editor and add the environment variables like this:
@@ -203,7 +207,7 @@ To create a `.env` file in the project's directory, you can use a text editor an
     ARK_CONSOLE_LOG_LEVEL=WARNING
     ARK_FILE_LOG_LEVEL=INFO
     ARK_ENCODING=utf-8
-    ARK_DNS_SERVERS=1.1.1.1,8.8.8.8
+    ARK_DNS_SERVERS=<ip_of_dns_server1>,<ip_of_dns_server2>,<ip_of_dns_server3>
 
 Save the file as .env in the project's directory. The environment variables will be automatically loaded when running Ark. To override any of these settings, simply set an environment variable with the same name outside of the dotenv file.
 
@@ -236,52 +240,25 @@ With these settings, Ark will output "INFO" level logs to the console and "DEBUG
 
 This section outlines the usage of the Makefile, which helps automate various tasks for building, linting, and managing Ark source code.
 
-- **GNU Make** is used to process `Makefile`'s and is available on most Unix-based systems, such as Linux and macOS.
+- **make** is used to process `Makefile`'s and is available on most Unix-based systems, such as Linux and macOS.
 
 ### Available Commands
 
-- `help`: Display a list of available commands and their descriptions.
-- `lint-python`: Run Python linters: black, ruff, mypy, and pylint.
-- `lint-ansible`: Run Ansible lint on all YAML files.
-- `clean`: Remove cache objects, such as .mypy_cache, .pytest_cache, .coverage, and .ruff_cache.
-- `check-version`: Check if the version defined in pyproject.toml and ark/init.py is consistent.
-- `set-version` VERSION=<new_version>: Set the Ark version in both pyproject.toml and ark/init.py.
-- `build`: Build Ark, running linters, checking version, and building with Poetry.
-- `install`: Install Ark in development mode using Poetry.
+- `help`: Displays the list of available targets.
+- `lint-python`: Runs Python linters (black, ruff, mypy, and pylint).
+- `lint-ansible`: Runs Ansible lint on all YAML files.
+- `clean`: Removes cache objects.
+- `check-version`: Checks version definition consistency.
+- `set-version`: Sets the Ark version.
+- `build`: Builds the Ark package.
+- `install`: Installs Ark in development mode.
+- `docs`: Builds the documentation.
 
-### Usage Examples
-
-- Display the list of available commands:
-
-      make help
-
-- Run Python linters:
+To run any of the targets, use the make command followed by the target name. For example:
 
       make lint-python
 
-- Run Ansible lint on all YAML files:
-
-      make lint-ansible
-
-- Remove cache objects:
-
-      make clean
-
-- Check Ark version consistency:
-
-      make check-version
-
-- Set a new version for Ark:
-
-      make set-version VERSION=1.0.0
-
-- Build Ark:
-
-      make build
-
-- Install Ark in development mode:
-
-      make install
+This will run the Python linters on the project.
 
 ## [Code of Conduct](./CODE_OF_CONDUCT.md)
 
