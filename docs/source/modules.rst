@@ -1,8 +1,8 @@
-Ark Package Documentation
-=========================
+Ark Modules
+===========
 
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 2
 
    ark.core.cron
    ark.core.facts
