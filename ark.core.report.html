@@ -47,7 +47,15 @@
 <li class="toctree-l2"><a class="reference internal" href="ark.core.facts.html">ark.core.facts</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ark.core.inventory.html">ark.core.inventory</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ark.core.lint.html">ark.core.lint</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">ark.core.report</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">ark.core.report</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#ark.core.report.extract_host_stats"><code class="docutils literal notranslate"><span class="pre">extract_host_stats()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ark.core.report.extract_play_recaps"><code class="docutils literal notranslate"><span class="pre">extract_play_recaps()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ark.core.report.extract_playbook_name_from_file"><code class="docutils literal notranslate"><span class="pre">extract_playbook_name_from_file()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ark.core.report.find_artifacts"><code class="docutils literal notranslate"><span class="pre">find_artifacts()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ark.core.report.get_artifact_timestamp"><code class="docutils literal notranslate"><span class="pre">get_artifact_timestamp()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ark.core.report.sort_and_limit_artifacts"><code class="docutils literal notranslate"><span class="pre">sort_and_limit_artifacts()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="ark.core.run.html">ark.core.run</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ark.database.html">ark.database</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ark.utils.html">ark.utils</a></li>
@@ -81,8 +89,115 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="ark-core-report">
-<h1>ark.core.report<a class="headerlink" href="#ark-core-report" title="Permalink to this heading"></a></h1>
+  <section id="module-ark.core.report">
+<span id="ark-core-report"></span><h1>ark.core.report<a class="headerlink" href="#module-ark.core.report" title="Permalink to this heading"></a></h1>
+<p>Ark - Reporting.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="ark.core.report.extract_host_stats">
+<span class="sig-prename descclassname"><span class="pre">ark.core.report.</span></span><span class="sig-name descname"><span class="pre">extract_host_stats</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">recap</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#ark.core.report.extract_host_stats" title="Permalink to this definition"></a></dt>
+<dd><p>Extract the host stats from the recap.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>recap</strong> (<em>str</em>) – The recap to extract the host stats from.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The host stats.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict[str, dict[str, int]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ark.core.report.extract_play_recaps">
+<span class="sig-prename descclassname"><span class="pre">ark.core.report.</span></span><span class="sig-name descname"><span class="pre">extract_play_recaps</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">content</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#ark.core.report.extract_play_recaps" title="Permalink to this definition"></a></dt>
+<dd><p>Extract the play recaps from the content.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>content</strong> (<em>str</em>) – The content to extract the play recaps from.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The list of play recaps.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[str]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ark.core.report.extract_playbook_name_from_file">
+<span class="sig-prename descclassname"><span class="pre">ark.core.report.</span></span><span class="sig-name descname"><span class="pre">extract_playbook_name_from_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="headerlink" href="#ark.core.report.extract_playbook_name_from_file" title="Permalink to this definition"></a></dt>
+<dd><p>Extract the playbook name from the file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>file_path</strong> (<em>str</em>) – The path to the file.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The playbook name or None if it could not be found.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Optional[str]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ark.core.report.find_artifacts">
+<span class="sig-prename descclassname"><span class="pre">ark.core.report.</span></span><span class="sig-name descname"><span class="pre">find_artifacts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">project_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Path</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#ark.core.report.find_artifacts" title="Permalink to this definition"></a></dt>
+<dd><p>Find the artifacts for the project.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>project_name</strong> (<em>str</em>) – The name of the project.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The list of artifact folders.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[Path]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ark.core.report.get_artifact_timestamp">
+<span class="sig-prename descclassname"><span class="pre">ark.core.report.</span></span><span class="sig-name descname"><span class="pre">get_artifact_timestamp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stdout_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#ark.core.report.get_artifact_timestamp" title="Permalink to this definition"></a></dt>
+<dd><p>Get the timestamp of the artifact.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>stdout_path</strong> (<em>Path</em>) – The path to the stdout file.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The timestamp of the artifact.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ark.core.report.sort_and_limit_artifacts">
+<span class="sig-prename descclassname"><span class="pre">ark.core.report.</span></span><span class="sig-name descname"><span class="pre">sort_and_limit_artifacts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">artifact_folders</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Path</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">last</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Path</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#ark.core.report.sort_and_limit_artifacts" title="Permalink to this definition"></a></dt>
+<dd><p>Sort and limit the number of artifacts to display.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>artifact_folders</strong> (<em>List[Path]</em>) – List of artifact folders.</p></li>
+<li><p><strong>last</strong> (<em>Optional[int]</em>) – The number of artifacts to display.
+Returns all artifacts if None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The sorted and limited list of artifact folders.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[Path]</p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 
 

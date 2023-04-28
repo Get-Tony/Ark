@@ -48,7 +48,13 @@
 <li class="toctree-l2"><a class="reference internal" href="ark.core.inventory.html">ark.core.inventory</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ark.core.lint.html">ark.core.lint</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ark.core.report.html">ark.core.report</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">ark.core.run</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">ark.core.run</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#ark.core.run.find_playbooks"><code class="docutils literal notranslate"><span class="pre">find_playbooks()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ark.core.run.get_playbook_path"><code class="docutils literal notranslate"><span class="pre">get_playbook_path()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ark.core.run.prepare_extra_vars"><code class="docutils literal notranslate"><span class="pre">prepare_extra_vars()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ark.core.run.run_ansible_playbook"><code class="docutils literal notranslate"><span class="pre">run_ansible_playbook()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="ark.database.html">ark.database</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ark.utils.html">ark.utils</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ark.settings.html">ark.settings</a></li>
@@ -81,8 +87,97 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="ark-core-run">
-<h1>ark.core.run<a class="headerlink" href="#ark-core-run" title="Permalink to this heading"></a></h1>
+  <section id="module-ark.core.run">
+<span id="ark-core-run"></span><h1>ark.core.run<a class="headerlink" href="#module-ark.core.run" title="Permalink to this heading"></a></h1>
+<p>Ark - Playbook Execution.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="ark.core.run.find_playbooks">
+<span class="sig-prename descclassname"><span class="pre">ark.core.run.</span></span><span class="sig-name descname"><span class="pre">find_playbooks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">project_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#ark.core.run.find_playbooks" title="Permalink to this definition"></a></dt>
+<dd><p>Find all playbooks for a project.</p>
+<dl class="simple">
+<dt>Rules:</dt><dd><ul class="simple">
+<li><dl class="simple">
+<dt>Playbooks are located in the project directory under the ‘project’</dt><dd><p>subdirectory.</p>
+</dd>
+</dl>
+</li>
+<li><p>Playbooks must have a ‘.yml’ or ‘.yaml’ extension.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>project_name</strong> (<em>str</em>) – The name of the project.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list of playbooks.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[str]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ark.core.run.get_playbook_path">
+<span class="sig-prename descclassname"><span class="pre">ark.core.run.</span></span><span class="sig-name descname"><span class="pre">get_playbook_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">project_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">playbook_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Path</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="headerlink" href="#ark.core.run.get_playbook_path" title="Permalink to this definition"></a></dt>
+<dd><p>Get the path to a playbook.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>project_name</strong> (<em>str</em>) – Project name.</p></li>
+<li><p><strong>playbook_file</strong> (<em>str</em>) – Playbook filename.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Path to the playbook or None if it does not exist.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Optional[Path]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ark.core.run.prepare_extra_vars">
+<span class="sig-prename descclassname"><span class="pre">ark.core.run.</span></span><span class="sig-name descname"><span class="pre">prepare_extra_vars</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">extra_vars</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#ark.core.run.prepare_extra_vars" title="Permalink to this definition"></a></dt>
+<dd><p>Prepare extra vars for ansible-runner.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>extra_vars</strong> (<em>str</em>) – A comma separated list of key=value pairs.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A dictionary of extra vars.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict[str, str]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ark.core.run.run_ansible_playbook">
+<span class="sig-prename descclassname"><span class="pre">ark.core.run.</span></span><span class="sig-name descname"><span class="pre">run_ansible_playbook</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">project_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">playbook_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rotate_artifacts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extra_vars_dict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbosity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Any</span></span></span><a class="headerlink" href="#ark.core.run.run_ansible_playbook" title="Permalink to this definition"></a></dt>
+<dd><p>Run an Ansible playbook.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>playbook_path</strong> (<em>Path</em>) – Path to the playbook.</p></li>
+<li><p><strong>rotate_artifacts</strong> (<em>int</em>) – Artifact rotation limit.</p></li>
+<li><p><strong>limit</strong> (<em>str</em>) – Ansible limit.</p></li>
+<li><p><strong>extra_vars_dict</strong> (<em>dict[str, str]</em>) – Extra vars.</p></li>
+<li><p><strong>verbosity</strong> (<em>int, optional</em>) – Ansible verbosity. Defaults to 0.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Ansible runner result.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Any</p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 
 

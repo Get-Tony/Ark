@@ -45,7 +45,17 @@
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">Ark Package Documentation</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="ark.core.cron.html">ark.core.cron</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ark.core.facts.html">ark.core.facts</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">ark.core.inventory</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">ark.core.inventory</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#ark.core.inventory.check_host_resolution"><code class="docutils literal notranslate"><span class="pre">check_host_resolution()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ark.core.inventory.check_project_resolution"><code class="docutils literal notranslate"><span class="pre">check_project_resolution()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ark.core.inventory.get_all_groups"><code class="docutils literal notranslate"><span class="pre">get_all_groups()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ark.core.inventory.get_group"><code class="docutils literal notranslate"><span class="pre">get_group()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ark.core.inventory.get_groups_for_host"><code class="docutils literal notranslate"><span class="pre">get_groups_for_host()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ark.core.inventory.get_host"><code class="docutils literal notranslate"><span class="pre">get_host()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ark.core.inventory.get_hosts_for_group"><code class="docutils literal notranslate"><span class="pre">get_hosts_for_group()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ark.core.inventory.get_project_hosts"><code class="docutils literal notranslate"><span class="pre">get_project_hosts()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="ark.core.lint.html">ark.core.lint</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ark.core.report.html">ark.core.report</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ark.core.run.html">ark.core.run</a></li>
@@ -81,8 +91,164 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="ark-core-inventory">
-<h1>ark.core.inventory<a class="headerlink" href="#ark-core-inventory" title="Permalink to this heading"></a></h1>
+  <section id="module-ark.core.inventory">
+<span id="ark-core-inventory"></span><h1>ark.core.inventory<a class="headerlink" href="#module-ark.core.inventory" title="Permalink to this heading"></a></h1>
+<p>Ark - Ansible Inventory Management.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="ark.core.inventory.check_host_resolution">
+<span class="sig-prename descclassname"><span class="pre">ark.core.inventory.</span></span><span class="sig-name descname"><span class="pre">check_host_resolution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">host</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dns_servers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#ark.core.inventory.check_host_resolution" title="Permalink to this definition"></a></dt>
+<dd><p>Check if a host can be resolved by a list of DNS servers.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>host</strong> (<em>str</em>) – Host name.</p></li>
+<li><p><strong>dns_servers</strong> (<em>List[str]</em>) – List of DNS servers.</p></li>
+<li><p><strong>timeout</strong> (<em>int</em>) – Timeout in seconds.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of DNS servers that could not resolve the host.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[str]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ark.core.inventory.check_project_resolution">
+<span class="sig-prename descclassname"><span class="pre">ark.core.inventory.</span></span><span class="sig-name descname"><span class="pre">check_project_resolution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">project_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dns_servers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="headerlink" href="#ark.core.inventory.check_project_resolution" title="Permalink to this definition"></a></dt>
+<dd><p>Check if all hosts in a project can be resolved by a list of DNS servers.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dns_servers</strong> (<em>Optional[list[str]], optional</em>) – List of DNS servers.
+Defaults to None.</p></li>
+<li><p><strong>timeout</strong> (<em>int, optional</em>) – Timeout in seconds. Defaults to 5.</p></li>
+<li><p><strong>output</strong> (<em>Optional[str], optional</em>) – Output format. Defaults to None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>List of hosts that could not be</dt><dd><p>resolved.</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Optional[list[dict[str, str]]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ark.core.inventory.get_all_groups">
+<span class="sig-prename descclassname"><span class="pre">ark.core.inventory.</span></span><span class="sig-name descname"><span class="pre">get_all_groups</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">project_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ansible.inventory.group.Group</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#ark.core.inventory.get_all_groups" title="Permalink to this definition"></a></dt>
+<dd><p>Get all groups in a project’s inventory.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>project_name</strong> (<em>str</em>) – Project name.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dictionary of groups.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict[str, Group]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ark.core.inventory.get_group">
+<span class="sig-prename descclassname"><span class="pre">ark.core.inventory.</span></span><span class="sig-name descname"><span class="pre">get_group</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">project_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">group_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Group</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="headerlink" href="#ark.core.inventory.get_group" title="Permalink to this definition"></a></dt>
+<dd><p>Get a group from a project.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>project_name</strong> (<em>str</em>) – Project name.</p></li>
+<li><p><strong>group_name</strong> (<em>str</em>) – Group name.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Group object or None if the group does not exist.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Union[Group, None]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ark.core.inventory.get_groups_for_host">
+<span class="sig-prename descclassname"><span class="pre">ark.core.inventory.</span></span><span class="sig-name descname"><span class="pre">get_groups_for_host</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">host</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Host</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#ark.core.inventory.get_groups_for_host" title="Permalink to this definition"></a></dt>
+<dd><p>Get all groups a host is a member of.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>host</strong> (<em>Host</em>) – Host object.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of groups.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list[str]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ark.core.inventory.get_host">
+<span class="sig-prename descclassname"><span class="pre">ark.core.inventory.</span></span><span class="sig-name descname"><span class="pre">get_host</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">project_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">host_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Host</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="headerlink" href="#ark.core.inventory.get_host" title="Permalink to this definition"></a></dt>
+<dd><p>Get a host from a project.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>project_name</strong> (<em>str</em>) – Project name.</p></li>
+<li><p><strong>host_name</strong> (<em>str</em>) – Host name.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Host object or None if the host does not exist.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Union[Host, None]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ark.core.inventory.get_hosts_for_group">
+<span class="sig-prename descclassname"><span class="pre">ark.core.inventory.</span></span><span class="sig-name descname"><span class="pre">get_hosts_for_group</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">group</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Group</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">ansible.inventory.host.Host</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#ark.core.inventory.get_hosts_for_group" title="Permalink to this definition"></a></dt>
+<dd><p>Get all hosts in a group.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>group</strong> (<em>Group</em>) – Group object.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of hosts.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list[Union[Host, None]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ark.core.inventory.get_project_hosts">
+<span class="sig-prename descclassname"><span class="pre">ark.core.inventory.</span></span><span class="sig-name descname"><span class="pre">get_project_hosts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target_project</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">ansible.inventory.host.Host</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#ark.core.inventory.get_project_hosts" title="Permalink to this definition"></a></dt>
+<dd><p>Get all hosts in a project.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>target_project</strong> (<em>str</em>) – Project name.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of hosts.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list[Host]</p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 
 

@@ -46,7 +46,11 @@
 <li class="toctree-l2"><a class="reference internal" href="ark.core.cron.html">ark.core.cron</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ark.core.facts.html">ark.core.facts</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ark.core.inventory.html">ark.core.inventory</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">ark.core.lint</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">ark.core.lint</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#ark.core.lint.ansible_lint_accessible"><code class="docutils literal notranslate"><span class="pre">ansible_lint_accessible()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ark.core.lint.lint_playbook_or_project"><code class="docutils literal notranslate"><span class="pre">lint_playbook_or_project()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="ark.core.report.html">ark.core.report</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ark.core.run.html">ark.core.run</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ark.database.html">ark.database</a></li>
@@ -81,8 +85,48 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="ark-core-lint">
-<h1>ark.core.lint<a class="headerlink" href="#ark-core-lint" title="Permalink to this heading"></a></h1>
+  <section id="module-ark.core.lint">
+<span id="ark-core-lint"></span><h1>ark.core.lint<a class="headerlink" href="#module-ark.core.lint" title="Permalink to this heading"></a></h1>
+<p>Ark - Ansible Linting.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="ark.core.lint.ansible_lint_accessible">
+<span class="sig-prename descclassname"><span class="pre">ark.core.lint.</span></span><span class="sig-name descname"><span class="pre">ansible_lint_accessible</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#ark.core.lint.ansible_lint_accessible" title="Permalink to this definition"></a></dt>
+<dd><p>Check if ansible-lint is installed and accessible.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><dl class="simple">
+<dt>True if ansible-lint is installed and accessible,</dt><dd><p>otherwise False.</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ark.core.lint.lint_playbook_or_project">
+<span class="sig-prename descclassname"><span class="pre">ark.core.lint.</span></span><span class="sig-name descname"><span class="pre">lint_playbook_or_project</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">project_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">playbook_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbosity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="headerlink" href="#ark.core.lint.lint_playbook_or_project" title="Permalink to this definition"></a></dt>
+<dd><p>Lint a playbook or project.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>project_name</strong> (<em>str</em>) – Project name.</p></li>
+<li><p><strong>playbook_file</strong> (<em>Optional[str]</em>) – Playbook filename.</p></li>
+<li><p><strong>verbosity</strong> (<em>int, optional</em>) – Verbosity level. Defaults to 0.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Linting output or None if the linting process fails.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Optional[str]</p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 
 

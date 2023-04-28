@@ -44,7 +44,17 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">Ark Package Documentation</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="ark.core.cron.html">ark.core.cron</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">ark.core.facts</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">ark.core.facts</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#ark.core.facts.find_caches"><code class="docutils literal notranslate"><span class="pre">find_caches()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ark.core.facts.get_all_hosts"><code class="docutils literal notranslate"><span class="pre">get_all_hosts()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ark.core.facts.load_cache_dirs"><code class="docutils literal notranslate"><span class="pre">load_cache_dirs()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ark.core.facts.merge_and_compare_facts"><code class="docutils literal notranslate"><span class="pre">merge_and_compare_facts()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ark.core.facts.query_host_facts"><code class="docutils literal notranslate"><span class="pre">query_host_facts()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ark.core.facts.query_hosts_by_fact"><code class="docutils literal notranslate"><span class="pre">query_hosts_by_fact()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ark.core.facts.remove_host"><code class="docutils literal notranslate"><span class="pre">remove_host()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ark.core.facts.store_facts"><code class="docutils literal notranslate"><span class="pre">store_facts()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="ark.core.inventory.html">ark.core.inventory</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ark.core.lint.html">ark.core.lint</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ark.core.report.html">ark.core.report</a></li>
@@ -81,8 +91,183 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="ark-core-facts">
-<h1>ark.core.facts<a class="headerlink" href="#ark-core-facts" title="Permalink to this heading"></a></h1>
+  <section id="module-ark.core.facts">
+<span id="ark-core-facts"></span><h1>ark.core.facts<a class="headerlink" href="#module-ark.core.facts" title="Permalink to this heading"></a></h1>
+<p>Ark - Ansible Facts.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="ark.core.facts.find_caches">
+<span class="sig-prename descclassname"><span class="pre">ark.core.facts.</span></span><span class="sig-name descname"><span class="pre">find_caches</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">pathlib.Path</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#ark.core.facts.find_caches" title="Permalink to this definition"></a></dt>
+<dd><p>Find all fact cache directories.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>target_dir</strong> (<em>Optional[str], optional</em>) – Target directory.
+Defaults to None.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of fact cache directories.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list[Path]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ark.core.facts.get_all_hosts">
+<span class="sig-prename descclassname"><span class="pre">ark.core.facts.</span></span><span class="sig-name descname"><span class="pre">get_all_hosts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Session</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">ark.models.facts.AnsibleHostFacts</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#ark.core.facts.get_all_hosts" title="Permalink to this definition"></a></dt>
+<dd><p>Get all hosts from the database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>session</strong> (<em>Optional[Session], optional</em>) – Database session.
+Defaults to None.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – Session is required.</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List of AnsibleHostFacts objects.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>list[AnsibleHostFacts]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ark.core.facts.load_cache_dirs">
+<span class="sig-prename descclassname"><span class="pre">ark.core.facts.</span></span><span class="sig-name descname"><span class="pre">load_cache_dirs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fact_cache_paths</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">pathlib.Path</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ark.models.facts.AnsibleHostFacts</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#ark.core.facts.load_cache_dirs" title="Permalink to this definition"></a></dt>
+<dd><p>Load all fact cache directories.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>fact_cache_paths</strong> (<em>list[Path]</em>) – List of fact cache directories.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dictionary of AnsibleHostFacts objects.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict[str, AnsibleHostFacts]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ark.core.facts.merge_and_compare_facts">
+<span class="sig-prename descclassname"><span class="pre">ark.core.facts.</span></span><span class="sig-name descname"><span class="pre">merge_and_compare_facts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">existing_facts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_facts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#ark.core.facts.merge_and_compare_facts" title="Permalink to this definition"></a></dt>
+<dd><p>Merge and compare facts.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>existing_facts</strong> (<em>str</em>) – Existing facts.</p></li>
+<li><p><strong>new_facts</strong> (<em>str</em>) – New facts.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>_description_</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Tuple[bool, str]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ark.core.facts.query_host_facts">
+<span class="sig-prename descclassname"><span class="pre">ark.core.facts.</span></span><span class="sig-name descname"><span class="pre">query_host_facts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fqdn</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fact_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fuzzy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Session</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Generator</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#ark.core.facts.query_host_facts" title="Permalink to this definition"></a></dt>
+<dd><p>Query host facts.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fqdn</strong> (<em>str</em>) – Fully qualified domain name.</p></li>
+<li><p><strong>fact_key</strong> (<em>Optional[str], optional</em>) – Ansible fact key.
+Defaults to None.</p></li>
+<li><p><strong>fuzzy</strong> (<em>bool, optional</em>) – Fuzzy match fact key. Defaults to False.</p></li>
+<li><p><strong>session</strong> (<em>Optional[Session], optional</em>) – Database session.
+Defaults to None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – Session is required.</p>
+</dd>
+<dt class="field-odd">Yields<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>Generator[Tuple[str, Any], None, None]</em> – Fact key and value.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ark.core.facts.query_hosts_by_fact">
+<span class="sig-prename descclassname"><span class="pre">ark.core.facts.</span></span><span class="sig-name descname"><span class="pre">query_hosts_by_fact</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fact_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fact_value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fuzzy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Session</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Generator</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#ark.core.facts.query_hosts_by_fact" title="Permalink to this definition"></a></dt>
+<dd><p>Query hosts by fact.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fact_key</strong> (<em>str</em>) – Fact key.</p></li>
+<li><p><strong>fact_value</strong> (<em>Any</em>) – Fact value.</p></li>
+<li><p><strong>fuzzy</strong> (<em>bool, optional</em>) – Fuzzy match fact key. Defaults to False.</p></li>
+<li><p><strong>session</strong> (<em>Optional[Session], optional</em>) – Database session.
+Defaults to None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – Session is required.</p>
+</dd>
+<dt class="field-odd">Yields<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>Generator[Tuple[str, Dict[str, Any]], None, None]</em> – Host and facts.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ark.core.facts.remove_host">
+<span class="sig-prename descclassname"><span class="pre">ark.core.facts.</span></span><span class="sig-name descname"><span class="pre">remove_host</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fqdn</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Session</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#ark.core.facts.remove_host" title="Permalink to this definition"></a></dt>
+<dd><p>Remove a host from the database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fqdn</strong> (<em>str</em>) – Fully qualified domain name.</p></li>
+<li><p><strong>session</strong> (<em>Optional[Session], optional</em>) – Database session.
+Defaults to None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – Session is required.</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if host was removed, False otherwise.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ark.core.facts.store_facts">
+<span class="sig-prename descclassname"><span class="pre">ark.core.facts.</span></span><span class="sig-name descname"><span class="pre">store_facts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">host_facts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">AnsibleHostFacts</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Session</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#ark.core.facts.store_facts" title="Permalink to this definition"></a></dt>
+<dd><p>Store facts in the database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>host_facts</strong> (<em>Dict[str, AnsibleHostFacts]</em>) – Host facts.</p></li>
+<li><p><strong>session</strong> (<em>Optional[Session], optional</em>) – Database session.
+Defaults to None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>ValueError</strong> – Session is required.</p></li>
+<li><p><strong>integrity_error</strong> – Unknown IntegrityError occurred.</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List of updated hosts.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>list[str]</p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 
 

@@ -50,7 +50,17 @@
 <li class="toctree-l2"><a class="reference internal" href="ark.core.run.html">ark.core.run</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ark.database.html">ark.database</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ark.utils.html">ark.utils</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">ark.settings</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">ark.settings</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#ark.settings.ARKSettings"><code class="docutils literal notranslate"><span class="pre">ARKSettings</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#ark.settings.ARKSettings.Config"><code class="docutils literal notranslate"><span class="pre">ARKSettings.Config</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ark.settings.ARKSettings.load_from_env"><code class="docutils literal notranslate"><span class="pre">ARKSettings.load_from_env()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ark.settings.ARKSettings.validate_encoding"><code class="docutils literal notranslate"><span class="pre">ARKSettings.validate_encoding()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#ark.settings.get_projects_dir"><code class="docutils literal notranslate"><span class="pre">get_projects_dir()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ark.settings.load_env_file"><code class="docutils literal notranslate"><span class="pre">load_env_file()</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -80,8 +90,59 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="ark-settings">
-<h1>ark.settings<a class="headerlink" href="#ark-settings" title="Permalink to this heading"></a></h1>
+  <section id="module-ark.settings">
+<span id="ark-settings"></span><h1>ark.settings<a class="headerlink" href="#module-ark.settings" title="Permalink to this heading"></a></h1>
+<p>Ark - Settings.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="ark.settings.ARKSettings">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ark.settings.</span></span><span class="sig-name descname"><span class="pre">ARKSettings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_env_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">PathLike</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">PathLike</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">PathLike</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="p"><span class="pre">...</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'&lt;object</span> <span class="pre">object&gt;'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_env_file_encoding</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_env_nested_delimiter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_secrets_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">PathLike</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">PROJECTS_DIR</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'/home/runner/ark_projects'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">DB_URL</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'sqlite:////home/runner/ark_projects/ark.db'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">CONSOLE_LOG_LEVEL</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'WARNING'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">FILE_LOG_LEVEL</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'INFO'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ENCODING</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'utf-8'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">CRONJOB_TAG</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'#Ark-'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">RUN_SCRIPT</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'/home/runner/ark_projects/ark_run_script.sh'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">DNS_SERVERS</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'8.8.8.8'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">TABLE_FORMAT</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'psql'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ark.settings.ARKSettings" title="Permalink to this definition"></a></dt>
+<dd><p>Ark settings.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="ark.settings.ARKSettings.Config">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Config</span></span><a class="headerlink" href="#ark.settings.ARKSettings.Config" title="Permalink to this definition"></a></dt>
+<dd><p>Ark settings configuration.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ark.settings.ARKSettings.load_from_env">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">load_from_env</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#ark.settings.ARKSettings" title="ark.settings.ARKSettings"><span class="pre">ARKSettings</span></a></span></span><a class="headerlink" href="#ark.settings.ARKSettings.load_from_env" title="Permalink to this definition"></a></dt>
+<dd><p>Load settings from environment variables.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ark.settings.ARKSettings.validate_encoding">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">validate_encoding</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#ark.settings.ARKSettings.validate_encoding" title="Permalink to this definition"></a></dt>
+<dd><p>Validate Encoding.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ark.settings.get_projects_dir">
+<span class="sig-prename descclassname"><span class="pre">ark.settings.</span></span><span class="sig-name descname"><span class="pre">get_projects_dir</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#ark.settings.get_projects_dir" title="Permalink to this definition"></a></dt>
+<dd><p>Check for a projects directory environment variable.</p>
+<p>Custom projects directory can be set with the environment variable
+ARK_PROJECTS_DIR. If not set, the default projects directory is
+$HOME/ark_projects.</p>
+<p>If a defined custom projects directory does not exist,
+Ark will exit with an error.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ark.settings.load_env_file">
+<span class="sig-prename descclassname"><span class="pre">ark.settings.</span></span><span class="sig-name descname"><span class="pre">load_env_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">projects_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'.env'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#ark.settings.load_env_file" title="Permalink to this definition"></a></dt>
+<dd><p>Load environment variables from a file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>projects_dir</strong> (<em>str</em>) – The projects directory.</p></li>
+<li><p><strong>file_name</strong> (<em>str, optional</em>) – The name of the environment file.
+Defaults to “.env”.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 
 

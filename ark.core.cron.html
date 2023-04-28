@@ -43,7 +43,14 @@
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">Ark Package Documentation</a><ul class="current">
-<li class="toctree-l2 current"><a class="current reference internal" href="#">ark.core.cron</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">ark.core.cron</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#ark.core.cron.create_cronjob"><code class="docutils literal notranslate"><span class="pre">create_cronjob()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ark.core.cron.find_cronjobs"><code class="docutils literal notranslate"><span class="pre">find_cronjobs()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ark.core.cron.list_ark_cronjobs"><code class="docutils literal notranslate"><span class="pre">list_ark_cronjobs()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ark.core.cron.remove_all_cronjobs"><code class="docutils literal notranslate"><span class="pre">remove_all_cronjobs()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ark.core.cron.remove_cronjob"><code class="docutils literal notranslate"><span class="pre">remove_cronjob()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="ark.core.facts.html">ark.core.facts</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ark.core.inventory.html">ark.core.inventory</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ark.core.lint.html">ark.core.lint</a></li>
@@ -81,8 +88,99 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="ark-core-cron">
-<h1>ark.core.cron<a class="headerlink" href="#ark-core-cron" title="Permalink to this heading"></a></h1>
+  <section id="module-ark.core.cron">
+<span id="ark-core-cron"></span><h1>ark.core.cron<a class="headerlink" href="#module-ark.core.cron" title="Permalink to this heading"></a></h1>
+<p>Ark - Cronjob.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="ark.core.cron.create_cronjob">
+<span class="sig-prename descclassname"><span class="pre">ark.core.cron.</span></span><span class="sig-name descname"><span class="pre">create_cronjob</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">project_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">playbook</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loop</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'hourly'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hourly_minute</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">30</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">daily_hour</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">4</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">CronItem</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="headerlink" href="#ark.core.cron.create_cronjob" title="Permalink to this definition"></a></dt>
+<dd><p>Create a new cronjob.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>project_name</strong> (<em>str</em>) – Project name.</p></li>
+<li><p><strong>playbook</strong> (<em>str</em>) – Playbook name.</p></li>
+<li><p><strong>loop</strong> (<em>str, optional</em>) – Either ‘hourly’ or ‘daily’. Defaults to “hourly”.</p></li>
+<li><p><strong>hourly_minute</strong> (<em>int, optional</em>) – Which minute of the hour to run the
+cronjob. Defaults to 30.</p></li>
+<li><p><strong>daily_hour</strong> (<em>int, optional</em>) – Which hour of the day to run the cronjob.
+Defaults to 4.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>ValueError</strong> – Loop value is not ‘hourly’ or ‘daily’.</p></li>
+<li><p><strong>ValueError</strong> – Hourly minute is not between 0 and 59.</p></li>
+<li><p><strong>ValueError</strong> – Daily hour is not between 0 and 23.</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><dl class="simple">
+<dt>CronItem object or None if a similar cronjob</dt><dd><p>already exists.</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Optional[CronItem]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ark.core.cron.find_cronjobs">
+<span class="sig-prename descclassname"><span class="pre">ark.core.cron.</span></span><span class="sig-name descname"><span class="pre">find_cronjobs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pattern</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">CronItem</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#ark.core.cron.find_cronjobs" title="Permalink to this definition"></a></dt>
+<dd><p>Find Ark-managed cronjobs containing the pattern.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>pattern</strong> (<em>str</em>) – Pattern to search for.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of CronItem objects.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[CronItem]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ark.core.cron.list_ark_cronjobs">
+<span class="sig-prename descclassname"><span class="pre">ark.core.cron.</span></span><span class="sig-name descname"><span class="pre">list_ark_cronjobs</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">CronItem</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#ark.core.cron.list_ark_cronjobs" title="Permalink to this definition"></a></dt>
+<dd><p>List all Ark-managed cronjobs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List of CronItem objects.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>List[CronItem]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ark.core.cron.remove_all_cronjobs">
+<span class="sig-prename descclassname"><span class="pre">ark.core.cron.</span></span><span class="sig-name descname"><span class="pre">remove_all_cronjobs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">project_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#ark.core.cron.remove_all_cronjobs" title="Permalink to this definition"></a></dt>
+<dd><p>Remove all Ark-managed cronjobs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>project_name</strong> (<em>Optional[str], optional</em>) – Project name.
+Defaults to None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ark.core.cron.remove_cronjob">
+<span class="sig-prename descclassname"><span class="pre">ark.core.cron.</span></span><span class="sig-name descname"><span class="pre">remove_cronjob</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pattern</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#ark.core.cron.remove_cronjob" title="Permalink to this definition"></a></dt>
+<dd><p>Remove a cronjob.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>pattern</strong> (<em>str</em>) – Pattern to search for.</p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 
 
