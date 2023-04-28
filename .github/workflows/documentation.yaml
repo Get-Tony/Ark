@@ -1,4 +1,4 @@
-name: Docs
+name: Documentation
 on: [push, pull_request, workflow_dispatch]
 permissions:
     contents: write
@@ -13,16 +13,13 @@ jobs:
           pip install poetry sphinx sphinx_rtd_theme sphinxcontrib-napoleon
       - name: Sphinx build
         run: |
-          mkdir gh-pages
-          touch gh-pages/.nojekyll
-          cd docs/
-          poetry run sphinx-build -b html source _build
-          cp -r _build/* ../gh-pages/
+          mkdir public
+          touch public/.nojekyll
+          sphinx-build -b html ./docs/source ./public
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
         with:
-          publish_branch: gh-pages
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: gh-pages
-          force_orphan: true
+          publish_branch: docs
+          publish_dir: public
