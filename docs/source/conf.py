@@ -11,10 +11,7 @@ project = "Ark"
 copyright = f"2023, {ark.__author__}"
 author = ark.__author__
 
-extensions = [
-    "sphinx.ext.autodoc",
-    "sphinx.ext.napoleon",
-]
+extensions = ["sphinx.ext.autodoc", "sphinx.ext.napoleon", "sphinx.ext.github"]
 
 napoleon_google_docstring = True
 napoleon_use_param = False

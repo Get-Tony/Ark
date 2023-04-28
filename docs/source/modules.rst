@@ -1,4 +1,4 @@
-Ark Modules
+Modules
 ===========
 
 .. toctree::
