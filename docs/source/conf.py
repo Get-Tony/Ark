@@ -3,11 +3,13 @@
 import os
 import sys
 
+import ark
+
 sys.path.insert(0, os.path.abspath("../../"))
 
 project = "Ark"
-copyright = "2023, Anthony Pagan"
-author = "Anthony Pagan"
+copyright = f"2023, {ark.__author__}"
+author = ark.__author__
 
 extensions = [
     "sphinx.ext.autodoc",

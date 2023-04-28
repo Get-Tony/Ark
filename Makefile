@@ -92,3 +92,10 @@ build: lint-python check-version check-toml lint-python clean ## Build Ark.
 install: ## Install Ark in development mode.
 	@echo "Installing Ark..."
 	@poetry install
+
+.PHONY: docs
+docs: ## Build documentation.
+	@echo "Building documentation..."
+	@cd docs
+	@rm -rf _build
+	@poetry run sphinx-build -b html source _build
