@@ -3,9 +3,9 @@
 import os
 import sys
 
-import ark
-
 sys.path.insert(0, os.path.abspath("../../"))
+
+import ark  # noqa: E402
 
 project = "Ark"
 copyright = f"2023, {ark.__author__}"
