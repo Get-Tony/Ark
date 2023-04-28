@@ -1,16 +1,15 @@
-Welcome to Ark's documentation!
-===============================
+Ark Package Documentation
+=========================
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
 
-   modules
-
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+   ark.core.cron
+   ark.core.facts
+   ark.core.inventory
+   ark.core.lint
+   ark.core.report
+   ark.core.run
+   ark.database
+   ark.utils
+   ark.settings
