@@ -14,8 +14,8 @@ Ark is an intuitive command-line tool designed to simplify the management of mul
     - [Database](#database)
     - [Logging](#logging)
   - [Build and Installation](#build-and-installation)
-    - [Build with Poetry](#build-with-poetry)
     - [Installing from Wheel](#installing-from-wheel)
+    - [Build with Poetry](#build-with-poetry)
     - [Makefile (for Development)](#makefile-for-development)
   - [Disclaimer](#disclaimer)
   - [Contributing](#contributing)
@@ -82,23 +82,43 @@ Ark utilizes Python's built-in logging module, allowing for flexible and customi
 
 The `log_conf.py` file in the Ark package contains the `init_logging` function, which is responsible for initializing the logging configuration. This function sets up console and file handlers, log formatters, and log levels based on the provided parameters or environment variables.
 
-To customize the logging behavior, you can modify the following environment variables in your .env file or set them in your environment:
+To customize the logging behavior, you can modify the following environment variables in your `.env` file or set them as global environment variables:
 
 `ARK_CONSOLE_LOG_LEVEL`: Set the console log level (default: "WARNING").
 `ARK_FILE_LOG_LEVEL`: Set the file log level (default: "INFO").
 
-Example of a `.env` file with custom logging settings:
+Example of a `.env` file with finer logging settings:
 
-    ARK_CONSOLE_LOG_LEVEL=WARNING
+    ARK_CONSOLE_LOG_LEVEL=INFO
     ARK_FILE_LOG_LEVEL=DEBUG
 
 With these settings, Ark will output "INFO" level logs to the console and "DEBUG" level logs to the log file. If you want to disable file logging, simply don't set a `log_dir` value when calling the `init_logging` function or remove the `ARK_FILE_LOG_LEVEL` variable from your environment.
 
 ## Build and Installation
 
-Ark packages are available in the [Releases](https://github.com/Get-Tony/Ark/releases) section of the GitHub repository.
+Pre-built wheels are available on the [Releases](https://github.com/Get-Tony/Ark/releases) page.
 
-If you want to build Ark from source, see the [Build with Poetry](#build-with-poetry) section below.
+### Installing from Wheel
+
+ 1. Install the wheel file:
+
+        python3 -m pip install --user ark-<version_number>-py3-none-any.whl
+
+ 2. Ensure the `~/.local/bin` directory is in your `$PATH` to access Ark. If it is not already added, you can do so by adding the following line to your `.bashrc` file:
+
+            export PATH="$HOME/.local/bin:$PATH"
+
+      To add this line to your `.bashrc` file, you can run the following command:
+
+            echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
+
+      After adding the line, you need to reload your `.bashrc` file to apply the changes:
+
+            source ~/.bashrc
+
+ 3. Verify the installation:
+
+            ark --help
 
 ### Build with Poetry
 
@@ -127,28 +147,6 @@ If you want to build Ark from source, see the [Build with Poetry](#build-with-po
         poetry build
 
 The wheel file will be located in the `dist` directory. See the [Installing from Wheel](#installing-from-wheel) section for installation instructions.
-
-### Installing from Wheel
-
- 1. Install the wheel file:
-
-        python3 -m pip install --user ark-<version_number>-py3-none-any.whl
-
- 2. Ensure the `~/.local/bin` directory is in your `$PATH` to access Ark. If it is not already added, you can do so by adding the following line to your `.bashrc` file:
-
-            export PATH="$HOME/.local/bin:$PATH"
-
-      To add this line to your `.bashrc` file, you can run the following command:
-
-            echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
-
-      After adding the line, you need to reload your `.bashrc` file to apply the changes:
-
-            source ~/.bashrc
-
- 3. Verify the installation:
-
-            ark --help
 
 ### Makefile (for Development)
 
