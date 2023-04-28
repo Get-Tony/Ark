@@ -32,16 +32,17 @@
 
           <div class="body" role="main">
             
-  <section id="module-ark.core.facts">
+  <p>Go to the <a class="reference external" href="https://github.com/get-tony/Ark">Ark GitHub page</a>.</p>
+<section id="module-ark.core.facts">
 <span id="ark-core-facts"></span><h1>ark.core.facts<a class="headerlink" href="#module-ark.core.facts" title="Permalink to this heading">¶</a></h1>
 <p>Ark - Ansible Facts.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="ark.core.facts.find_caches">
-<span class="sig-prename descclassname"><span class="pre">ark.core.facts.</span></span><span class="sig-name descname"><span class="pre">find_caches</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">pathlib.Path</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#ark.core.facts.find_caches" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">ark.core.facts.</span></span><span class="sig-name descname"><span class="pre">find_caches</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Path</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">pathlib.Path</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#ark.core.facts.find_caches" title="Permalink to this definition">¶</a></dt>
 <dd><p>Find all fact cache directories.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>target_dir</strong> (<em>Optional[str], optional</em>) – Target directory.
+<dd class="field-odd"><p><strong>target_dir</strong> (<em>Optional[Union[str, Path]], optional</em>) – Target directory.
 Defaults to None.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -54,8 +55,8 @@ Defaults to None.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="ark.core.facts.get_all_hosts">
-<span class="sig-prename descclassname"><span class="pre">ark.core.facts.</span></span><span class="sig-name descname"><span class="pre">get_all_hosts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Session</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">ark.models.facts.AnsibleHostFacts</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#ark.core.facts.get_all_hosts" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ark.core.facts.get_all_db_hosts">
+<span class="sig-prename descclassname"><span class="pre">ark.core.facts.</span></span><span class="sig-name descname"><span class="pre">get_all_db_hosts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Session</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">ark.models.facts.AnsibleHostFacts</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#ark.core.facts.get_all_db_hosts" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get all hosts from the database.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -159,6 +160,26 @@ Defaults to None.</p></li>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="ark.core.facts.recursive_import">
+<span class="sig-prename descclassname"><span class="pre">ark.core.facts.</span></span><span class="sig-name descname"><span class="pre">recursive_import</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Path</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="headerlink" href="#ark.core.facts.recursive_import" title="Permalink to this definition">¶</a></dt>
+<dd><p>Recursively import facts from a directory.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>target_dir</strong> (<em>Union[str, Path]</em>) – Directory to import facts from.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>NotADirectoryError</strong> – Target directory is not a directory.</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List of updated hosts.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Union[list[str], None]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="ark.core.facts.remove_host">
 <span class="sig-prename descclassname"><span class="pre">ark.core.facts.</span></span><span class="sig-name descname"><span class="pre">remove_host</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fqdn</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Session</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#ark.core.facts.remove_host" title="Permalink to this definition">¶</a></dt>
 <dd><p>Remove a host from the database.</p>
@@ -230,7 +251,7 @@ Defaults to None.</p></li>
 <h3>Navigation</h3>
 <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="reference internal" href="modules.html">Ark Package Documentation</a><ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">Modules</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="ark.core.cron.html">ark.core.cron</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">ark.core.facts</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ark.core.inventory.html">ark.core.inventory</a></li>
@@ -248,7 +269,7 @@ Defaults to None.</p></li>
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
-  <li><a href="modules.html">Ark Package Documentation</a><ul>
+  <li><a href="modules.html">Modules</a><ul>
       <li>Previous: <a href="ark.core.cron.html" title="previous chapter">ark.core.cron</a></li>
       <li>Next: <a href="ark.core.inventory.html" title="next chapter">ark.core.inventory</a></li>
   </ul></li>

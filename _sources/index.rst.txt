@@ -1,3 +1,5 @@
+Go to the `Ark GitHub page <https://github.com/get-tony/Ark>`_.
+
 Welcome to Ark's documentation!
 ===============================
 
@@ -16,3 +18,4 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
+
