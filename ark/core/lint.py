@@ -2,126 +2,148 @@
 __author__ = "Anthony Pagan <get-tony@outlook.com>"
 
 import logging
-import re
-import subprocess
+from collections import Counter
 from pathlib import Path
-from typing import Optional
+from typing import Any, Dict, List, Optional, Tuple
 
-from ark.core.run import get_playbook_path
-from ark.settings import config
+from ansiblelint.constants import DEFAULT_RULESDIR
+from ansiblelint.errors import MatchError
+from ansiblelint.rules import RulesCollection
+from ansiblelint.runner import Runner
+
+from ark.core.run import find_playbooks, get_playbook_path
 
 logger = logging.getLogger(__name__)
 
 
-def ansible_lint_accessible() -> bool:
+def generate_summary_and_stats(matches: List[MatchError]) -> Dict[str, Any]:
     """
-    Check if ansible-lint is installed and accessible.
+    Generate summary and stats from lint matches.
+
+    Args:
+        matches (List[MatchError]): Lint matches.
 
     Returns:
-        bool: True if ansible-lint is installed and accessible,
-            otherwise False.
+        Dict[str, Any]: Summary and stats.
     """
-    try:
-        lint_version = subprocess.check_output(
-            ["ansible-lint", "--version", "--nocolor"],
-            stderr=subprocess.STDOUT,
+    stats: Counter[Any] = Counter()
+    for match in matches:
+        stats[match.rule] += 1
+
+    summary = []
+
+    for rule, count in stats.items():
+        summary.append(
+            {
+                "count": count,
+                "tag": rule.id,
+                "profile": rule.shortdesc,
+                "rule_associated_tags": ",".join(rule.tags),
+            }
         )
-        logger.debug(lint_version.decode(config.ENCODING).strip())
-        return True
-    except subprocess.CalledProcessError:
-        logger.critical("ansible-lint is not installed.")
-        return False
+
+    return {"summary": summary}
 
 
-def lint_playbook_or_project(
-    project_name: str, playbook_file: Optional[str], verbosity: int = 0
-) -> Optional[str]:
+def lint_playbook(
+    playbook: Path, verbose: bool = False
+) -> Optional[Dict[str, Any]]:
     """
-    Lint a playbook or project.
+    Lint a playbook.
+
+    Args:
+        playbook (Path): Path to playbook.
+        verbose (bool, optional): Print verbose output. Defaults to False.
+
+    Returns:
+        Optional[Dict[str, Any]]: Lint results.
+    """
+    logger.info("Linting playbook: '%s'", str(playbook).strip())
+
+    # Load default Ansible lint rules
+    rules = RulesCollection(rulesdirs=[DEFAULT_RULESDIR])
+
+    # Create a Runner instance with the playbook and rules
+    runner = Runner(str(playbook), rules=rules)
+
+    # Run linting on the playbook
+    matches = runner.run()
+
+    result = {}
+    logger.debug("Raw lint results: %s", matches)
+    if matches:
+        lint_results = []
+        if verbose:
+            for match in matches:
+                lint_results.append(
+                    {
+                        "match": str(match),
+                        "linenumber": match.linenumber,
+                        "details": match.details,
+                    }
+                )
+        result["lint_results"] = lint_results
+        summary = generate_summary_and_stats(matches)
+        result["summary"] = summary["summary"]
+        return result
+    logger.info("No issues found")
+    return None
+
+
+def lint_single_playbook(
+    project_name: str, playbook_file: str, verbose: bool = False
+) -> Optional[Dict[str, Any]]:
+    """
+    Lint a single playbook.
 
     Args:
         project_name (str): Project name.
-        playbook_file (Optional[str]): Playbook filename.
-        verbosity (int, optional): Verbosity level. Defaults to 0.
+        playbook_file (str): Playbook file name.
+        verbose (bool, optional): Print verbose output. Defaults to False.
 
     Returns:
-        Optional[str]: Linting output or None if the linting process fails.
+        Optional[Dict[str, Any]]: Lint results.
     """
-    if playbook_file:
-        lint_target = get_playbook_path(project_name, playbook_file)
-    else:
-        lint_target = Path(config.PROJECTS_DIR) / project_name
+    lint_target = get_playbook_path(project_name, playbook_file)
     if not lint_target:
-        logger.critical(
-            "Could not find lint target '%s'",
-            lint_target,
-        )
+        logger.critical("Could not find lint target '%s'", playbook_file)
         return None
-    logger.info("Linting playbook: '%s'", str(lint_target).strip())
-    lint_command = ["ansible-lint"]
-    if playbook_file:
-        lint_command.append(str(lint_target))
-    lint_command.extend(
-        [
-            "--project-dir",
-            str(Path(config.PROJECTS_DIR) / project_name),
-        ]
-    )
-    verbosity = min(verbosity, 3)
-    if verbosity > 0:
-        lint_command.append("-" + "v" * verbosity)
-    lint_command.append("--nocolor")
-    logger.debug("Lint command: '%s'", " ".join(lint_command))
-    result = None
-    try:
-        process = subprocess.run(
-            lint_command,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            text=True,
-            encoding=config.ENCODING,
-            cwd=str(Path(config.PROJECTS_DIR) / project_name),
-            check=True,
-        )
-        result = process.stdout
-        if process.returncode != 0:
-            raise subprocess.CalledProcessError(
-                process.returncode,
-                lint_command,
-                output=result,
-                stderr=process.stderr,
-            )
+    return lint_playbook(lint_target, verbose)
 
-    except subprocess.CalledProcessError as linting_error:
-        error_info = re.search(
-            r"Failed to load YAML file\n(.+?):\d+", linting_error.stderr
-        )
-        if error_info:
-            playbook_path = error_info.group(1)
-            logger.critical(
-                "Error linting project '%s'! "
-                "Problematic playbook: '%s', Error: '%s'",
-                project_name,
-                playbook_path,
-                linting_error.stderr.strip(),
-            )
+
+def lint_all_playbooks(
+    project_name: str, verbose: bool = False
+) -> List[Tuple[str, Dict[str, Any]]]:
+    """
+    Lint all playbooks in a project.
+
+    Args:
+        project_name (str): Project name.
+        verbose (bool, optional): Print verbose output. Defaults to False.
+
+    Returns:
+        List[Tuple[str, Dict[str, Any]]]: Lint results.
+    """
+    playbooks = find_playbooks(project_name)
+    results: List[Tuple[str, Dict[str, Any]]] = []
+
+    if not playbooks:
+        logger.critical("No playbooks found in project '%s'", project_name)
+        return results
+
+    for playbook in playbooks:
+        lint_target = get_playbook_path(project_name, playbook)
+        if lint_target:
+            result = lint_playbook(lint_target, verbose)
+            if result:
+                results.append((playbook, result))
+            else:
+                logger.info("No issues found in playbook '%s'.", playbook)
         else:
-            logger.critical("Error linting target '%s':", lint_target)
-            indented_stderr = "\n".join(
-                "    " + line if line else line
-                for line in linting_error.stderr.split("\n")
+            logger.error(
+                "Failed to lint playbook '%s', continuing with the "
+                "next playbook...",
+                playbook,
             )
-            logger.critical(
-                "%s",
-                indented_stderr,
-            )
-        result = linting_error.output
-    if not result:
-        return None
 
-    indented_result = "\n".join(
-        "    " + line if line else line for line in result.split("\n")
-    )
-
-    logger.info(indented_result.strip())
-    return indented_result.strip()
+    return results

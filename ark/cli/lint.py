@@ -2,6 +2,7 @@
 __author__ = "Anthony Pagan <get-tony@outlook.com>"
 
 import logging
+from typing import Any
 
 import click
 
@@ -12,55 +13,75 @@ from .utilities import log_command_call, project_name_validation_callback
 logger = logging.getLogger(__name__)
 
 
+def print_lint_results(result: dict[str, Any], verbose: bool = False) -> None:
+    """
+    Print lint results.
+
+    Args:
+        result (dict[str, Any]): Lint results.
+        verbose (bool, optional): Print verbose output. Defaults to False.
+    """
+    if verbose:
+        click.echo("Error(s) found:")
+        for lint_result in result["lint_results"]:
+            click.echo(
+                "".join(
+                    [
+                        f"    {lint_result['match']} "
+                        f"(Line {lint_result['linenumber']}): ",
+                        lint_result["details"].replace("\n", "\n    "),
+                    ]
+                )
+            )
+    click.echo("Rule Violation Summary")
+    click.echo("count  tag          profile rule associated tags")
+    click.echo("------------------------------------------------")
+    for summary_item in result["summary"]:
+        click.echo(
+            f"{summary_item['count']:<6} {summary_item['tag']:<12} "
+            f"{summary_item['profile']:<6} "
+            f"{summary_item['rule_associated_tags']:<14}"
+        )
+
+
 @click.command("lint")
 @click.argument(
     "project_name",
     type=click.Path(exists=False),
     callback=project_name_validation_callback,
 )
-@click.argument("playbook_file", type=click.Path(exists=False), default="")
+@click.argument("playbook", type=click.Path(exists=False), default="")
 @click.option(
     "-v",
-    "--verbosity",
-    default=0,
-    type=int,
-    help="Increase the verbosity of the output.",
+    "--verbose",
+    is_flag=True,
+    help="Display verbose output.",
 )
 @log_command_call()
-def lint_command(
-    project_name: str, playbook_file: str, verbosity: int
-) -> None:
+def lint_command(project_name: str, playbook: str, verbose: bool) -> None:
     """
-    Lint an Ansible playbook or project.
+    Lint playbooks in a project.
 
     Args:
         project_name (str): Project name.
-        playbook_file (str): Playbook file.
-        verbosity (int): Verbosity level.
+        playbook (str): Playbook name.
+        verbose (bool): Print verbose output.
     """
-    if not lint.ansible_lint_accessible():
-        click.echo("ansible-lint is not installed.")
-        return
-
-    if playbook_file:
-        click.echo(f"Linting '{playbook_file}'...")
-        result = lint.lint_playbook_or_project(
-            project_name, playbook_file, verbosity
-        )
+    if playbook:
+        click.echo(f"Linting '{playbook}'...")
+        result = lint.lint_single_playbook(project_name, playbook, verbose)
         if result:
-            click.echo(
-                f"Error linting playbook '{playbook_file}': "
-                f"{str(result).strip()}"
-            )
-            return
+            print_lint_results(result, verbose)
     else:
         click.echo(f"Linting all playbooks in project '{project_name}'...")
-        result = lint.lint_playbook_or_project(
-            project_name=project_name, playbook_file=None, verbosity=verbosity
-        )
-        if result:
+        results = lint.lint_all_playbooks(project_name, verbose)
+        for playbook_, result in results:
             click.echo(
-                f"Error linting project {project_name}: {str(result).strip()}"
+                f"\nLinting playbook '{playbook_}' in project "
+                f"'{project_name}'..."
             )
-            return
+            if result:
+                print_lint_results(result, verbose)
+            else:
+                click.echo(f"No issues found in playbook '{playbook_}'.")
     click.echo("Done linting.")

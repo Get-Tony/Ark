@@ -3,7 +3,6 @@ __author__ = "Anthony Pagan <get-tony@outlook.com>"
 
 import getpass
 import logging
-import re
 import time
 from functools import wraps
 from pathlib import Path
@@ -12,6 +11,7 @@ from typing import Any, Callable, List, Optional, TypeVar, Union, cast
 import click
 
 from ark.settings import config
+from ark.utils import validate_project_dir
 
 logger = logging.getLogger(__name__)
 
@@ -88,75 +88,6 @@ def echo_or_page(content: str, page: Optional[bool]) -> None:
         click.echo(content)
 
 
-def validate_project_dir(
-    project_name: str,
-) -> Optional[dict[str, List[Union[str, Path]]]]:
-    """
-    Validate project directory.
-
-    Args:
-        project_name (str): Project name.
-
-    Raises:
-        ValueError: If project name is not valid.
-
-    Returns:
-        Optional[dict[str, List[Union[str, Path]]]]: A dictionary containing
-            the project name and a list of required directories and files.
-    """
-    if not re.match(r"^[a-zA-Z0-9_-]+$", Path(project_name).name):
-        logger.critical(
-            "Project name '%s' is not valid. It must only contain "
-            "alphanumeric characters, dashes, and underscores.",
-            project_name,
-        )
-        raise ValueError(
-            "Project name is not valid. It must only contain alphanumeric "
-            "characters, dashes, and underscores."
-        )
-    required_dirs = [
-        Path(config.PROJECTS_DIR) / project_name / "project",
-        Path(config.PROJECTS_DIR) / project_name / "inventory",
-        Path(config.PROJECTS_DIR) / project_name / "env",
-    ]
-    required_files = [
-        Path(config.PROJECTS_DIR) / project_name / "project" / "main.yml",
-        Path(config.PROJECTS_DIR) / project_name / "env" / "envvars",
-        Path(config.PROJECTS_DIR) / project_name / "env" / "ssh_key",
-    ]
-
-    logger.info("Checking for required files and directories")
-
-    # Check for required directories
-    missing_dirs: List[Union[str, Path]] = []
-    for required_dir in required_dirs:
-        if not required_dir.is_dir():
-            missing_dirs.append(required_dir)
-    if missing_dirs:
-        logger.critical("Required directories are missing: '%s'", missing_dirs)
-    else:
-        logger.debug("No missing directories found for: '%s'", project_name)
-
-    # Check for required files
-    missing_files: List[Union[str, Path]] = []
-    for required_file in required_files:
-        if not required_file.is_file():
-            missing_files.append(required_file)
-    if missing_files:
-        logger.critical("Required files are missing: '%s'", missing_files)
-    else:
-        logger.debug("No missing files found for: '%s'", project_name)
-
-    # Return a report if any directories or files are missing
-    if any(missing_dirs or missing_files):
-        missing_report: dict[str, List[Union[str, Path]]] = {
-            "missing_dirs": missing_dirs,
-            "missing_files": missing_files,
-        }
-        return missing_report
-    return None
-
-
 def project_name_validation_callback(
     ctx: click.Context,
     param: click.Parameter,  # pylint: disable=unused-argument
@@ -191,28 +122,4 @@ def project_name_validation_callback(
         click.echo("Please resolve the issues above and try again.")
         ctx.abort()
     logger.debug("Project validation complete.")
-    return project_name
-
-
-def validate_inventory_dir(
-    ctx: click.Context,
-    param: click.Parameter,  # pylint: disable=unused-argument
-    project_name: str,
-) -> str:
-    """
-    Validate that a project's inventory directory exists.
-
-    Args:
-        ctx (click.Context): Click context. Do not use.
-        param (click.Parameter): Click parameter. Do not use.
-        project_name (str): Project name.
-
-    Returns:
-        str: Project name.
-    """
-    if not (Path(config.PROJECTS_DIR) / project_name / "inventory").is_dir():
-        click.echo(
-            f"Inventory directory does not exist for Project: {project_name}"
-        )
-        ctx.exit(1)
     return project_name

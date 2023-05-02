@@ -12,8 +12,9 @@ from tabulate import tabulate
 from ark.core import facts
 from ark.models.facts import AnsibleHostFacts
 from ark.settings import config
+from ark.utils import validate_project_dir
 
-from .utilities import echo_or_page, log_command_call, validate_project_dir
+from .utilities import echo_or_page, log_command_call
 
 logger = logging.getLogger(__name__)
 

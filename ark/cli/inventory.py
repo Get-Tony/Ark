@@ -2,6 +2,7 @@
 __author__ = "Anthony Pagan <get-tony@outlook.com>"
 
 import logging
+from pathlib import Path
 from typing import Union
 
 import click
@@ -10,10 +11,35 @@ from tabulate import tabulate
 
 from ark.core import inventory
 from ark.settings import config
+from ark.utils import get_valid_projects
 
-from .utilities import log_command_call, validate_inventory_dir
+from .utilities import log_command_call
 
 logger = logging.getLogger(__name__)
+
+
+def validate_inventory_dir(
+    ctx: click.Context,
+    param: click.Parameter,  # pylint: disable=unused-argument
+    project_name: str,
+) -> str:
+    """
+    Validate that a project's inventory directory exists.
+
+    Args:
+        ctx (click.Context): Click context. Do not use.
+        param (click.Parameter): Click parameter. Do not use.
+        project_name (str): Project name.
+
+    Returns:
+        str: Project name.
+    """
+    if not (Path(config.PROJECTS_DIR) / project_name / "inventory").is_dir():
+        click.echo(
+            f"Inventory directory does not exist for Project: {project_name}"
+        )
+        ctx.exit(1)
+    return project_name
 
 
 @click.group("inventory")
@@ -85,15 +111,18 @@ def get_group_members(project_name: str, group_name: str) -> None:
 @inventory_group.command("check-dns")
 @click.argument(
     "project_name",
-    callback=validate_inventory_dir,
-    required=True,
+    default="",
+    required=False,
 )
+@click.argument("host", required=False, default=None)
 @click.option("--dns-server", multiple=True, required=False, default=None)
 @click.option("--timeout", required=False, default=5)
-@click.option("--outfile", required=False, default=None)
 @log_command_call()
 def check_dns(
-    project_name: str, dns_server: list[str], timeout: int, outfile: str
+    project_name: str,
+    dns_server: list[str],
+    host: str,
+    timeout: int,
 ) -> None:
     """
     Check DNS resolution for all hosts in an inventory.
@@ -101,24 +130,37 @@ def check_dns(
     Args:
         project_name (str): Project name.
         dns_server (list[str]): List of DNS servers to check.
+        host (str): Host to check. If not specified, all hosts will be checked.
         timeout (int): Timeout in seconds.
-        outfile (str): Output file.
     """
-    hosts = inventory.check_project_resolution(
-        project_name, dns_server, timeout, outfile
-    )
-    if hosts:
-        click.echo(
-            "The following hosts are not resolvable with the following "
-            "DNS targets:"
+    known_projects = get_valid_projects()
+    if project_name:
+        if project_name not in known_projects:
+            click.echo(
+                f"Project '{project_name}' not found. "
+                f"Valid projects are: {', '.join(known_projects)}"
+            )
+            return
+        projects = [project_name]
+    else:
+        projects = known_projects
+
+    for project in projects:
+        hosts = inventory.check_host_resolution(
+            project, dns_server, host, timeout
         )
-        table_data = [
-            {
-                "Hostname": host.get("Hostname"),
-                "Unresolvable from": host.get("Unresolvable from"),
-            }
-            for host in hosts
-        ]
-        click.echo(
-            tabulate(table_data, headers="keys", tablefmt=config.TABLE_FORMAT)
-        )
+        if hosts:
+            click.echo(f"[{project}]")
+            table_data = [
+                {
+                    "Hostname": host.get("Hostname"),
+                    "Unresolvable from": host.get("Unresolvable from"),
+                }
+                for host in hosts
+            ]
+            click.echo(
+                tabulate(
+                    table_data, headers="keys", tablefmt=config.TABLE_FORMAT
+                )
+            )
+        click.echo()

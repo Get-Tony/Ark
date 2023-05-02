@@ -1,12 +1,14 @@
 """Ark - Ansible Inventory Management."""
 __author__ = "Anthony Pagan <get-tony@outlook.com>"
 
-import csv
+import ipaddress
 import logging
-import subprocess
 from pathlib import Path
-from typing import Any, List, Optional, Union
+from typing import List, Optional, Union
 
+import dns.exception
+import dns.resolver
+import dns.reversename
 from ansible.inventory.group import Group
 from ansible.inventory.host import Host
 from ansible.inventory.manager import InventoryManager
@@ -131,7 +133,7 @@ def get_all_groups(project_name: str) -> dict[str, Group]:
     return groups
 
 
-def check_host_resolution(
+def check_host_resolution_single(
     host: str, dns_servers: List[str], timeout: int
 ) -> List[str]:
     """
@@ -147,41 +149,62 @@ def check_host_resolution(
     """
     missing_servers = []
     for server in dns_servers:
+        resolver = dns.resolver.Resolver()
+        resolver.nameservers = [server]
+        resolver.timeout = timeout
+        resolver.lifetime = timeout
         try:
-            resolved = subprocess.run(
-                ["nslookup", host, server],
-                capture_output=True,
-                timeout=timeout,
-                check=True,
-            )
-            if resolved.returncode == 1:
-                continue
-        except subprocess.TimeoutExpired:
+            # Check if the input is an IP address
+            ipaddress.ip_address(host)
+            # If it's an IP address, try to resolve the PTR record
+            resolver.resolve(dns.reversename.from_address(host), "PTR")
+        except ValueError:
+            # If it's not an IP address, try to resolve the A record
+            try:
+                resolver.resolve(host, "A")
+            except dns.resolver.NoAnswer:
+                missing_servers.append(server)
+            except dns.resolver.Timeout:
+                missing_servers.append(server)
+            except dns.resolver.NXDOMAIN:
+                missing_servers.append(server)
+            except dns.exception.DNSException as dns_exception_one:
+                logger.error("Error: %s", dns_exception_one)
+                missing_servers.append(server)
+        except dns.resolver.NoAnswer:
             missing_servers.append(server)
-        except subprocess.CalledProcessError:
+        except dns.resolver.Timeout:
+            missing_servers.append(server)
+        except dns.resolver.NXDOMAIN:
+            missing_servers.append(server)
+        except dns.exception.DNSException as dns_exception_two:
+            logger.error("Error: %s", dns_exception_two)
             missing_servers.append(server)
 
     return missing_servers
 
 
-def check_project_resolution(  # pylint: disable=too-many-locals
+def check_host_resolution(
     project_name: str,
     dns_servers: Optional[list[str]] = None,
+    target_host: Optional[str] = None,
     timeout: int = 5,
-    output: Optional[str] = None,
 ) -> Optional[list[dict[str, str]]]:
     """
-    Check if all hosts in a project can be resolved by a list of DNS servers.
+    Check if a specific host or all hosts in a project can be resolved by
+    a list of DNS servers.
 
     Args:
+        project_name (str): The project name.
         dns_servers (Optional[list[str]], optional): List of DNS servers.
             Defaults to None.
         timeout (int, optional): Timeout in seconds. Defaults to 5.
-        output (Optional[str], optional): Output format. Defaults to None.
+        target_host (Optional[str], optional): The target host name to check.
+            Defaults to None (check all hosts in the project).
 
     Returns:
-        Optional[list[dict[str, str]]]: List of hosts that could not be
-            resolved.
+        Optional[list[dict[str, str]]]: A list of dictionaries containing
+        hosts and the list of DNS servers that could not resolve them.
     """
     if not dns_servers:
         dns_servers = config.DNS_SERVERS.split(",")
@@ -196,50 +219,34 @@ def check_project_resolution(  # pylint: disable=too-many-locals
         if not hostname:
             logger.error("Host '%s' has no name", host)
             continue
+
+        # If a target host is specified, skip other hosts
+        if target_host and hostname != target_host:
+            continue
+
         try:
-            missing_servers = check_host_resolution(
+            missing_servers = check_host_resolution_single(
                 hostname, dns_servers, timeout
             )
-        except (
-            subprocess.TimeoutExpired,
-            subprocess.CalledProcessError,
-        ) as timeout_error:
-            logger.error("Error: '%s'", timeout_error, exc_info=True)
-            continue
         except ValueError as value_error:
             logger.error("Error: '%s'", value_error, exc_info=True)
             continue
 
         if missing_servers:
-            results.append([host, ", ".join(missing_servers)])
+            results.append(
+                {
+                    "Hostname": hostname,
+                    "Unresolvable from": ", ".join(missing_servers),
+                }
+            )
 
-    if output:
-        try:
-            with open(
-                output, "w", newline="", encoding=config.ENCODING
-            ) as csv_file:
-                writer = csv.writer(csv_file)
-                writer.writerow(["Hostname", "Unresolvable from"])
-                writer.writerows(results)
-        except FileNotFoundError as file_error:
-            logger.critical(
-                "Error: File not found - '%s'", file_error, exc_info=True
-            )
-        except PermissionError as perm_error:
-            logger.critical(
-                "Error: Permission denied - '%s'", perm_error, exc_info=True
-            )
-    else:
-        unresolvable_hosts: list[dict[str, Any]] = []
-        for host, missing_servers in results:
-            unresolvable_hosts.append(
-                {"Hostname": host, "Unresolvable from": missing_servers}
-            )
-            logger.error(
-                "Host '%s' is not resolvable by DNS servers: %s",
-                host,
-                missing_servers,
-            )
-        return unresolvable_hosts
+        # If a target host is specified and it has been processed,
+        # exit the loop
+        if target_host and hostname == target_host:
+            break
 
-    return None
+    if not results:
+        logger.info("All hosts are resolvable by the specified DNS servers.")
+        return None
+
+    return results
