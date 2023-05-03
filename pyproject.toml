@@ -1,11 +1,11 @@
 [tool.poetry]
 name = "ark"
-version = "0.3.5"
+version = "0.3.6"
 description = "A command-line tool for managing Ansible Runner Projects."
 authors = ["Anthony Pagan <get-tony@outlook.com>"]
 readme = "README.md"
 homepage = "https://github.com/Get-Tony/Ark"
-license = "MIT"
+license = "GPLv3"
 repository = "https://github.com/Get-Tony/Ark"
 keywords = ["ansible", "devops", "cli"]
 include = ["ark/py.typed"]
